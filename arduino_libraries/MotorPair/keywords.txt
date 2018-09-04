@@ -1,0 +1,3 @@
+MotorPair	KEYWORD1
+setSpeed	KEYWORD2
+stopMotors	KEYWORD2
