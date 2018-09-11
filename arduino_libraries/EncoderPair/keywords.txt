@@ -1,0 +1,8 @@
+EncoderPair	KEYWORD1
+encoderCalibrate	KEYWORD2
+writeCalibrationToEEPROM	KEYWORD2
+readCalibrationFromEEPROM	KEYWORD2
+__read	KEYWORD2
+setCounters	KEYWORD2
+toString	KEYWORD2
+counterString	KEYWORD2
