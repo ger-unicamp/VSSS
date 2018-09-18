@@ -4,5 +4,7 @@ writeCalibrationToEEPROM	KEYWORD2
 readCalibrationFromEEPROM	KEYWORD2
 __read	KEYWORD2
 setCounters	KEYWORD2
+getLeftCounter	KEYWORD2
+getRightCounter	KEYWORD2
 toString	KEYWORD2
 counterString	KEYWORD2

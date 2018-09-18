@@ -1,6 +1,6 @@
 #include <EncoderPair.h>
 
-EncoderPair(const unsigned int left_pin, const unsigned int right_pin) {
+EncoderPair::EncoderPair(const unsigned int left_pin, const unsigned int right_pin) {
 	this->left_pin = left_pin;
 	this->right_pin = right_pin;
 	this->high_threshold_left = 512;
@@ -14,7 +14,7 @@ EncoderPair(const unsigned int left_pin, const unsigned int right_pin) {
 	this->is_calibrated = false;
 }
 
-void encoderCalibrate(const int null_percentage, const unsigned int iterations = ITERATION_NUMBER) {
+void EncoderPair::encoderCalibrate(const int null_percentage, const unsigned int iterations) {
 	int max_left_value = 0;
 	int min_left_value = 1023;
 	int max_right_value = 0;
@@ -48,7 +48,7 @@ void encoderCalibrate(const int null_percentage, const unsigned int iterations =
 	this->is_calibrated = true;
 }
 
-void writeCalibrationToEEPROM(unsigned int base_adress) {
+void EncoderPair::writeCalibrationToEEPROM(unsigned int base_adress) {
 	EEPROM.write(base_adress+0, (byte) (this->high_threshold_left >> 8));
 	EEPROM.write(base_adress+1, (byte) (this->high_threshold_left & 0xff));
 
@@ -62,7 +62,7 @@ void writeCalibrationToEEPROM(unsigned int base_adress) {
 	EEPROM.write(base_adress+7, (byte) (this->low_threshold_right & 0xff));
 }
 
-void readCalibrationFromEEPROM(unsigned int base_adress) {
+void EncoderPair::readCalibrationFromEEPROM(unsigned int base_adress) {
 	this->high_threshold_left = (((int) EEPROM.read(base_adress+0)) << 8) + EEPROM.read(base_adress+1);
 	this->low_threshold_left = (((int) EEPROM.read(base_adress+2)) << 8) + EEPROM.read(base_adress+3);
 
@@ -70,47 +70,57 @@ void readCalibrationFromEEPROM(unsigned int base_adress) {
 	this->low_threshold_right = (((int) EEPROM.read(base_adress+6)) << 8) + EEPROM.read(base_adress+7);
 }
 
-void __read() {
-	if (analogRead(this->left_pin) > this->high_threshold_left && this->left_state == false) {
+void EncoderPair::__read() {
+	int left_read = analogRead(this->left_pin);
+	if (left_read > this->high_threshold_left && this->left_state == false) {
 		this->left_state = true;
 		this->left_counter = this->left_counter + 1;
 	}
-	else if (analogRead(this->left_pin) < this->low_threshold_left && this->left_state == true) {
+	else if (left_read < this->low_threshold_left && this->left_state == true) {
 		this->left_state = false;
 		this->left_counter = this->left_counter + 1;
 	}
 
-	if (analogRead(this->right_pin) > this->high_threshold_right && this->right_state == false) {
+	int right_read = analogRead(this->right_pin);
+	if (right_read > this->high_threshold_right && this->right_state == false) {
 		this->right_state = true;
 		this->right_counter = this->right_counter + 1;
 	}
-	else if (analogRead(this->right_pin) < this->low_threshold_right && this->right_state == true) {
+	else if (right_read < this->low_threshold_right && this->right_state == true) {
 		this->right_state = false;
 		this->right_counter = this->right_counter + 1;
 	}
 }
 
-void setCounters(const unsigned int left_counter, const unsigned int right_counter) {
+void EncoderPair::setCounters(const unsigned int left_counter, const unsigned int right_counter) {
 	this->left_counter = left_counter;
 	this->right_counter = right_counter;
 }
 
-String toString() {
-	String s = "PINS: "
-	s += this->left_pin + " " + this->right_pin + "\n";
+long int getLeftCounter() {
+	return this->left_counter;
+}
+
+long int getRightCounter() {
+	return this->right_counter;
+}
+
+String EncoderPair::toString() {
+	String s = "PINS: ";
+	s += String("")  + this->left_pin + " " + this->right_pin + "\n";
 	s += "LEFT VALUES: ";
-	s += this->high_threshold_left + " " + this->low_threshold_left + "\n";
+	s += String("") + this->high_threshold_left + " " + this->low_threshold_left + "\n";
 	s += "RIGHT VALUES: ";
-	s += this->high_threshold_right + " " + this->low_threshold_right + "\n";
+	s += String("") + this->high_threshold_right + " " + this->low_threshold_right + "\n";
 
 	return s;
 }
 
-String counterString() {
+String EncoderPair::counterString() {
 	String s = "ANALOG VALUES: ";
-	s += analogRead(this->left_pin) + " " + analogRead(this->right_pin) + "\n";
+	s += String("") + analogRead(this->left_pin) + " " + analogRead(this->right_pin) + "\n";
 	s += "COUNTER VALUES: ";
-	s += this->left_counter + " " + this->right_counter + "\n";
+	s += String("") + this->left_counter + " " + this->right_counter + "\n";
 
 	return s;
 }

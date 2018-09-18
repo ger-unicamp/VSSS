@@ -2,6 +2,7 @@
 #define ENCODERPAIR_H
 
 #include <Arduino.h>
+#include <EEPROM.h>
 
 #define ITERATION_NUMBER 10000
 
@@ -14,11 +15,10 @@ private:
 	unsigned int low_threshold_left;
 	unsigned int low_threshold_right;
 	bool is_calibrated;
-	volatile bool left_state;
-	volatile bool right_state;
-	volatile long int left_counter;
-	volatile long int right_counter;
-
+	bool left_state;
+	bool right_state;
+	long int left_counter;
+	long int right_counter;
 
 public:
 	EncoderPair(const unsigned int left_pin, const unsigned int right_pin);
@@ -26,7 +26,9 @@ public:
 	void writeCalibrationToEEPROM(unsigned int base_adress);
 	void readCalibrationFromEEPROM(unsigned int base_adress);
 	void __read();
-	void setCounters(const unsigned int left_counter, const unsigned int right_counter);
+	void setCounters(const unsigned int left_counter = 0, const unsigned int right_counter = 0);
+	long int getLeftCounter();
+	long int getRightCounter();
 	String toString();
 	String counterString();
 };
