@@ -16,10 +16,13 @@ private:
 	unsigned int in2;
 	unsigned int in3;
 	unsigned int in4;
+	int ASpeed;
+	int BSpeed;
 	void init();
 public:
+
 	MotorPair(const unsigned int in1, const unsigned int in2, const unsigned int in3, const unsigned int in4);
-	void setSpeed(const int motorA, const int motorB);
+	void setSpeed(const int motorA, const int motorB, float alpha=0);
 	void stopMotors();
 };
 
