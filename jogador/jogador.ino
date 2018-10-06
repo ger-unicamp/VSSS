@@ -1,16 +1,12 @@
 #include "jogador.h"
 
 #define DEBUG_MODE
-
+#undef DEBUG_MODE
 #ifdef DEBUG_MODE
-#define DEBUG_TEST 1
+#define debug_print(x) (Serial.println((x)))
 #else
-#define DEBUG_TEST 0
+#define debug_print(x)
 #endif
-
-#define debug_print(x) \
-	if (DEBUG_TEST) Serial.println(x)
-
 
 MotorPair motors(PH_IN1, PH_IN2, PH_IN3, PH_IN4);
 
@@ -28,19 +24,21 @@ void setup() {
 
 
 #ifdef DEBUG_MODE
-	Serial.begin(115200);
+	Serial.begin(9600);
 	delay(500);
 	debug_print("FINISHING SETUP");
 #endif
 
 }
 
+int rSpeed = 0;
+int lSpeed = 0;
+
 void loop() {
-	int rSpeed;
-	int lSpeed;
 
 	if (radio.available()) {
 		bool done = false;
+		debug_print("Radio available");
 		while (!done) {
 			done = radio.read(&message, sizeof(message));
 			if(message.checksum != hashMessage(message)) {
@@ -70,6 +68,7 @@ void loop() {
 	else {
 		debug_print("Radio not available");
 	}
-
+	debug_print(lSpeed);
+	debug_print(rSpeed);
 	motors.setSpeed(lSpeed, rSpeed);
 }

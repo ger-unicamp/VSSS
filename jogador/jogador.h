@@ -1,5 +1,6 @@
 #define PLAYER 0
 
+#include <SPI.h>
 #include "nRF24L01.h"
 #include "RF24.h"
 #include "message.h"
