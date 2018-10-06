@@ -77,6 +77,23 @@ void loop(void)
       mensagem.checksum = hashstring(mensagem);
 
       radio.write(&mensagem, sizeof(mensagem));
+
+
+        Serial.println("Enviou mensagem");
+        Serial.print(mensagem.vel1_dir);
+        Serial.print(" ");
+        Serial.print(mensagem.vel1_esq);
+        Serial.print(" ");
+        Serial.print(mensagem.vel2_dir);
+        Serial.print(" ");
+        Serial.print(mensagem.vel2_esq);
+        Serial.print(" ");
+        Serial.print(mensagem.vel3_dir);
+        Serial.print(" ");
+        Serial.print(mensagem.vel3_esq);
+        Serial.print(" ");
+        Serial.println(mensagem.checksum);
+
     }
     else{
       if(c == ','){
@@ -89,19 +106,4 @@ void loop(void)
     }
   }
 
-  Serial.println("Enviou mensagem");
-  Serial.print(mensagem.vel1_dir);
-  Serial.print(" ");
-  Serial.print(mensagem.vel1_esq);
-  Serial.print(" ");
-  Serial.print(mensagem.vel2_dir);
-  Serial.print(" ");
-  Serial.print(mensagem.vel2_esq);
-  Serial.print(" ");
-  Serial.print(mensagem.vel3_dir);
-  Serial.print(" ");
-  Serial.print(mensagem.vel3_esq);
-  Serial.print(" ");
-  Serial.println(mensagem.checksum);
-  
 }
