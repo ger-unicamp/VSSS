@@ -19,8 +19,8 @@
 #include <random>
 #include <chrono>
 
-#define DEBUG_PRINT
-//#undef DEBUG_PRINT
+#define DEBUG_PRINT_SERIAL
+//#undef DEBUG_PRINT_SERIAL
 
 class SerialSender {
 private:

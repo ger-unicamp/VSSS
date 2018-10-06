@@ -76,7 +76,7 @@ SerialSender::~SerialSender()
 
 void SerialSender::send(int vel_1l, int vel_1r, int vel_2l, int vel_2r, int vel_3l, int vel_3r) {
     dprintf(this->serialDescriptor, "[%d,%d,%d,%d,%d,%d]\n", vel_1l, vel_1r, vel_2l, vel_2r, vel_3l, vel_3r);
-#ifdef DEBUG_PRINT
+#ifdef DEBUG_PRINT_SERIAL
 	printf("Sent %d %d %d %d %d %d\n", vel_1l, vel_1r, vel_2l, vel_2r, vel_3l, vel_3r);
 #endif
 }
