@@ -1,3 +1,7 @@
+/*
+ *	Library for analog reflecting sensor as an enconder.
+ *	Rev 06/10/2018
+ */
 #include <EncoderPair.h>
 
 EncoderPair::EncoderPair(const unsigned int left_pin, const unsigned int right_pin) {

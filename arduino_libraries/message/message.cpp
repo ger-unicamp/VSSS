@@ -1,3 +1,8 @@
+/*
+ *	Library for VSSS specified data transmission.
+ *	Rev 06/10/2018
+ */
+
 #include <message.h>
 
 unsigned int hashMessage(Message msg) {

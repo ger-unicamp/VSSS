@@ -3,6 +3,7 @@
  *
  *	From Unicamp's Grupo de Estudos em Robótica - GER
  *
+ *	Rev 06/10/2018
  */
 
 #include <Arduino.h>

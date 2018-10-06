@@ -5,6 +5,8 @@
  *
  *	Code based on Adafruit's code at
  *	https://learn.adafruit.com/pages/4570/elements/1081214/download
+ *
+ *	Rev 06/10/2018
  */
 
 #include "MillisInterrupt.h"

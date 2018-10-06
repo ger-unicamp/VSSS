@@ -1,3 +1,8 @@
+/*
+ *	Library for analog reflecting sensor as an enconder.
+ *	Rev 06/10/2018
+ */
+
 #ifndef ENCODERPAIR_H
 #define ENCODERPAIR_H
 

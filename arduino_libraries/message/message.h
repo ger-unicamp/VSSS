@@ -1,3 +1,7 @@
+/*
+ *	Library for VSSS specified data transmission.
+ *	Rev 06/10/2018
+ */
 
 #ifndef MESSAGE_H
 #define MESSAGE_H
