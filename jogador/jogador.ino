@@ -24,7 +24,7 @@ void setup() {
 
 
 #ifdef DEBUG_MODE
-	Serial.begin(9600);
+	Serial.begin(57600);
 	delay(500);
 	debug_print("FINISHING SETUP");
 #endif
@@ -66,9 +66,9 @@ void loop() {
 		}
 	}
 	else {
-		debug_print("Radio not available");
+		//debug_print("Radio not available");
 	}
-	debug_print(lSpeed);
-	debug_print(rSpeed);
+	//debug_print(lSpeed);
+	//debug_print(rSpeed);
 	motors.setSpeed(lSpeed, rSpeed);
 }
