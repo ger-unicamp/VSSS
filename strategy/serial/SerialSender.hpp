@@ -25,7 +25,7 @@
 class SerialSender {
 private:
     int serialDescriptor;
-
+    char buffer[1000];
 public:
     SerialSender(const char *serialPath, unsigned int baud);
     ~SerialSender();

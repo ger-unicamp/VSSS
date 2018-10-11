@@ -75,14 +75,15 @@ SerialSender::~SerialSender()
 }
 
 void SerialSender::send(int vel_1l, int vel_1r, int vel_2l, int vel_2r, int vel_3l, int vel_3r) {
-    dprintf(this->serialDescriptor, "[%d,%d,%d,%d,%d,%d]\n", vel_1l, vel_1r, vel_2l, vel_2r, vel_3l, vel_3r);
+    sprintf(this->buffer, "[%d,%d,%d,%d,%d,%d]\n", vel_1l, vel_1r, vel_2l, vel_2r, vel_3l, vel_3r);
+	write(this->serialDescriptor, this->buffer, strlen(this->buffer));
 #ifdef DEBUG_PRINT_SERIAL
 	printf("Sent %d %d %d %d %d %d\n", vel_1l, vel_1r, vel_2l, vel_2r, vel_3l, vel_3r);
 #endif
 }
 
 int main() {
-	SerialSender sender("/dev/ttyS5", 57600);
+	SerialSender sender("/dev/ttyS11", 57600);
 	sleep(1);
 
 	unsigned int seed = std::chrono::system_clock::now().time_since_epoch().count();
@@ -90,8 +91,9 @@ int main() {
 
 	for (int i = 0; i < 100; i++) {
 		int v = randGenerator()%256;
-		sender.send(v, v, v, v, v, v);
-		usleep(2000);
+		//sender.send(v, v, v, v, v, v);
+		sender.send(i, i, i, i, i, i);
+		usleep(15000);
 	}
     return 0;
 }
