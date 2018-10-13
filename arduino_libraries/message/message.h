@@ -8,7 +8,7 @@
 
 #include <Arduino.h>
 
-typedef struct Message_st {
+struct Message {
   int left_speed0;
   int right_speed0;
   int left_speed1;
@@ -16,7 +16,7 @@ typedef struct Message_st {
   int left_speed2;
   int right_speed2;
   int checksum;
-} Message;
+};
 
 unsigned int hashMessage(Message msg);
 String messageToString(Message msg);
