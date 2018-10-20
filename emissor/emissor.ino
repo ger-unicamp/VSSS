@@ -17,6 +17,8 @@ As portas para comunicacao SPI sao definidas por padrao no Uno e no Nano como: M
 #define CE_PIN 9
 #define CSN_PIN 10
 
+#define LED_MESSAGE 2
+
 #include <SPI.h>
 #include "nRF24L01.h"
 #include "RF24.h"
@@ -33,6 +35,7 @@ void setup(void)
     Serial.begin(BAUD);
     radio.begin();
     radio.openWritingPipe(pipe);
+    pinMode(LED_MESSAGE, OUTPUT);
     delay(500);
 
     message = {0, 0, 0, 0, 0, 0, 0};
@@ -64,6 +67,7 @@ void loop(void)
 
             radio.write(&message, sizeof(message));
 
+            digitalWrite(LED_MESSAGE, !digitalRead(LED_MESSAGE));
             debug_print(messageToString(message));
 
         }
