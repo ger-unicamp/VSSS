@@ -13,7 +13,9 @@ SerialSender::SerialSender(const char *serialPath, unsigned int baud) {
 		// Sets the read() function to return NOW and not wait for data to enter buffer if there isn't anything there.
 		fcntl(this->serialDescriptor, F_SETFL, FNDELAY);
 
-		tcgetattr(this->serialDescriptor, &options); //Gets the current options for the port
+		if (tcgetattr(this->serialDescriptor, &options) < 0) {
+			throw std::runtime_error("Failed to get terminal attributes");
+		} //Gets the current options for the port
 
 		// Selection of BAUD Rate
 		switch (baud) {
@@ -58,7 +60,9 @@ SerialSender::SerialSender(const char *serialPath, unsigned int baud) {
 		options.c_cflag &= ~CSIZE;					// 8bit size
 		options.c_cflag |= CS8;
 
-		tcsetattr(this->serialDescriptor, TCSANOW, &options);			//Set the new options for the port "NOW"
+		if (tcsetattr(this->serialDescriptor, TCSANOW, &options) < 0) {
+			throw std::runtime_error("Failed to set terminal attributes");
+		}	//Set the new options for the port "NOW"
 
 	}
 }
@@ -89,7 +93,7 @@ int main() {
 	unsigned int seed = std::chrono::system_clock::now().time_since_epoch().count();
 	std::minstd_rand0 randGenerator(seed);
 
-	for (int i = 0; i < 100; i++) {
+	for (int i = 0; i < 5000; i++) {
 		int v = randGenerator()%256;
 		//sender.send(v, v, v, v, v, v);
 		sender.send(i, i, i, i, i, i);
