@@ -30,8 +30,7 @@ const uint64_t pipe = 0xA2E8F0F0E1LL;
 
 Message message;
 
-void setup(void)
-{
+void setup(void) {
     Serial.begin(BAUD);
     radio.begin();
     radio.openWritingPipe(pipe);
@@ -41,43 +40,47 @@ void setup(void)
     message = {0, 0, 0, 0, 0, 0, 0};
 }
 
-int i;
+int i, j;
 bool hasOpened = false;
-String instruction[6] = {"","","","","",""};
+char instruction[6][10] = {0};
 
-void loop(void)
-{
-    while(Serial.available()){
-        char c = Serial.read();
-        if (c == '[') {
-            i = 0;
-            instruction[0] = "";
-            hasOpened = true;
-        }
-        else if (c == ']' && hasOpened) {
-
-            hasOpened = false;
-            message.left_speed0 = instruction[0].toInt();
-            message.right_speed0 = instruction[1].toInt();
-            message.left_speed1 = instruction[2].toInt();
-            message.right_speed1 = instruction[3].toInt();
-            message.left_speed2 = instruction[4].toInt();
-            message.right_speed2 = instruction[5].toInt();
-            message.checksum = hashMessage(message);
-
-            radio.write(&message, sizeof(message));
-
-            digitalWrite(LED_MESSAGE, !digitalRead(LED_MESSAGE));
-            debug_print(messageToString(message));
-
-        }
-        else if (hasOpened) {
-            if (c == ',') {
-                i++;
-                instruction[i] = "";
+void loop(void) {
+    while (1) {
+        while(Serial.available()){
+            char c = Serial.read();
+            if (c == '[') {
+                i = j = 0;
+                instruction[0][0] = 0;
+                hasOpened = true;
             }
-            else if (i < 6 && (c == '-' || isdigit(c))) {
-                instruction[i] += c;
+            else if (c == ']' && hasOpened) {
+
+                hasOpened = false;
+                message.left_speed0 = atoi(instruction[0]);
+                message.right_speed0 = atoi(instruction[1]);
+                message.left_speed1 = atoi(instruction[2]);
+                message.right_speed1 = atoi(instruction[3]);
+                message.left_speed2 = atoi(instruction[4]);
+                message.right_speed2 = atoi(instruction[5]);
+                message.checksum = hashMessage(message);
+
+                radio.write(&message, sizeof(message));
+
+                digitalWrite(LED_MESSAGE, !digitalRead(LED_MESSAGE));
+                debug_print(messageToString(message));
+
+            }
+            else if (hasOpened) {
+                if (c == ',') {
+                    i++;
+                    j = 0;
+                    instruction[i][0] = 0;
+                }
+                else if (i < 6 && j < 9 && (c == '-' || isdigit(c))) {
+                    instruction[i][j] = c;
+                    j++;
+                    instruction[i][j] = 0;
+                }
             }
         }
     }
