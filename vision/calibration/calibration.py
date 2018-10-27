@@ -90,9 +90,40 @@ while(True):
     # Display the resulting frame
     cv2.imshow('MyVideo_Original', frame)
     cv2.imshow("MyVideo_Transformed", transformed_frame)
+
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
-# When everything done, release the capture
-cap.release()
+cv2.destroyAllWindows()
+
+img = transformed_frame
+Z = img.reshape((-1,3))
+
+# convert to np.float32
+Z = np.float32(Z)
+
+# define criteria, number of clusters(K) and apply kmeans()
+criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 10, 1.0)
+K = 12
+ret,label,center=cv2.kmeans(Z,K,None,criteria,10,cv2.KMEANS_RANDOM_CENTERS)
+
+# Now convert back into uint8, and make original image
+center = np.uint8(center)
+res = center[label.flatten()]
+res2 = res.reshape((img.shape))
+
+retangulos = np.zeros((200, 1200, 3), np.uint8)
+rect_size = 1200 // K
+
+for i in range(K):
+    color_rect = tuple([int(x) for x in center[i]])
+    cv2.rectangle(retangulos, (i*rect_size, 0), ((i+1)*rect_size, 150), color_rect, thickness=-1)
+    cv2.putText(retangulos, str(i), (i*rect_size + rect_size//2 - 15, 185), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), thickness=3)
+
+cv2.imshow('cores', retangulos)
+cv2.imshow('img',img)
+cv2.imshow('img_clusterizada',res2)
+cv2.waitKey(0)
+for i in range(K):
+    nome_cor = input('Cluster {}: '.format(i))
 cv2.destroyAllWindows()
