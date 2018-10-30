@@ -1,41 +1,5 @@
 #include "vision.h"//header
 
-//Classes------------------------------------------------------------------------------
-class FrameBuffer {
-	bool empty;
-	Mat frame_buffer;
-	condition_variable not_empty;
-	mutex frame_mtx;
-	
-	public:
-	
-		FrameBuffer() : frame_buffer(480, 854, CV_8UC3) {
-			this->empty = true;
-		}
-		
-		void update(const Mat &m) {
-			unique_lock<mutex> lck(this->frame_mtx);
-			
-			this->frame_buffer = m;
-			empty = false;
-			(this->not_empty).notify_one();
-			
-			lck.unlock();
-		}
-		
-		void get(Mat &m) {
-			unique_lock<mutex> lck(this->frame_mtx);
-			
-			while(empty) {
-				(this->not_empty).wait(lck);
-			}
-			m = this->frame_buffer;
-			empty = true;
-			
-			lck.unlock();
-		}
-};
-
 //Global variables---------------------------------------------------------------------
 VideoCapture capture;
 FrameBuffer view_fb;
@@ -92,6 +56,30 @@ int main(int, char**)
 }
 
 //Function implementations-------------------------------------------------------------
+
+FrameBuffer::FrameBuffer() : frame_buffer(480, 854, CV_8UC3) {
+	this->empty = true;
+}
+
+void FrameBuffer::get(Mat &m) {
+	unique_lock<mutex> lck(this->frame_mtx);		
+	while(empty) {
+		(this->not_empty).wait(lck);
+	}
+	m = this->frame_buffer;
+	empty = true;			
+	lck.unlock();
+}
+
+void FrameBuffer::update(const Mat &m) {
+	unique_lock<mutex> lck(this->frame_mtx);
+			
+	this->frame_buffer = m;
+	empty = false;
+	(this->not_empty).notify_one();
+			
+	lck.unlock();
+}
 
 void frame_reader(){
 
