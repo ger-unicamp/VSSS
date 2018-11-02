@@ -17,25 +17,49 @@ using namespace cv;
 using namespace std;
 
 //Classes------------------------------------------------------------------------------
-class FrameBuffer {
+template <class T> class VSSSBuffer {
 	bool empty;
-	Mat frame_buffer;
+	T frame_buffer;
 	condition_variable not_empty;
 	mutex frame_mtx;
-	
-	public:
-	
-		FrameBuffer();
-		
-		void update(const Mat &m);
-		
-		void get(Mat &m);
+
+public:
+
+	VSSSBuffer();
+	void update(const T &t);
+	void get(T &t);
+};
+
+class FrameCapture {
+	std::thread frame_capture_th;
+
+public:
+
+	FrameCapture();
+	FrameCapture(VideoCapture &capture,
+		 		VSSSBuffer<Mat> &processing_buffer,
+	  	 		int *waitkey_buf);
+	~FrameCapture();
+	void start(VideoCapture &capture,
+		 		VSSSBuffer<Mat> &processing_buffer,
+	  	 		int *waitkey_buf);
+
+};
+
+class GameViewer {
+	std::thread frame_show_th;
+
+public:
+	GameViewer();
+	GameViewer(VSSSBuffer<Mat> &view_buffer, int *waitkey_buf);
+	~GameViewer();
+	void start(VSSSBuffer<Mat> &view_buffer, int *waitkey_buf);
+
 };
 
 
 //Function declarations----------------------------------------------------------------
-void frame_reader();
+void frame_capture(VideoCapture &capture, VSSSBuffer<Mat> &processing_buffer, int *waitkey_buf);
 void frame_show();
 
 #endif
-
