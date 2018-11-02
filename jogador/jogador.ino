@@ -1,12 +1,14 @@
 #include "jogador.h"
 
 #define DEBUG_MODE
-#undef DEBUG_MODE
+//#undef DEBUG_MODE
 #ifdef DEBUG_MODE
 #define debug_print(x) (Serial.println((x)))
 #else
 #define debug_print(x)
 #endif
+
+#define LED_MESSAGE 13
 
 MotorPair motors(PH_IN1, PH_IN2, PH_IN3, PH_IN4);
 
@@ -29,6 +31,7 @@ void setup() {
 	debug_print("FINISHING SETUP");
 #endif
 
+	pinMode(LED_MESSAGE, OUTPUT);
 }
 
 int rSpeed = 0;
@@ -63,6 +66,10 @@ void loop() {
 			}
 
 			debug_print(messageToString(message));
+			#ifdef DEBUG_MODE
+				Serial.flush();
+			#endif
+			digitalWrite(LED_MESSAGE, !digitalRead(LED_MESSAGE));
 		}
 	}
 	else {
@@ -70,5 +77,15 @@ void loop() {
 	}
 	//debug_print(lSpeed);
 	//debug_print(rSpeed);
+
+	if (lSpeed > 255)
+		lSpeed = 255;
+	else if (lSpeed < -255)
+		lSpeed = -255;
+	if (rSpeed > 255)
+		rSpeed = 255;
+	else if (rSpeed < -255)
+		rSpeed = -255;
+
 	motors.setSpeed(lSpeed, rSpeed);
 }
