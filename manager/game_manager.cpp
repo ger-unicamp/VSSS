@@ -49,6 +49,5 @@ int main(int, char**) {
     }
 
     std::cout << "Number of captured frames: " << nFrames << endl;
-    std::terminate();
     return nFrames > 0 ? 0 : 1;
 }
