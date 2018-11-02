@@ -21,11 +21,11 @@ void FrameCapture::start(VideoCapture &capture,
 				VSSSBuffer<Mat> &processing_buffer,
 				int *waitkey_buf)
 {
-	this->frame_capture_th = std::thread(frame_capture, capture, processing_buffer, waitkey_buf);
+	this->frame_capture_th = std::thread(frame_capture, &capture, &processing_buffer, waitkey_buf);
 }
 
-void frame_capture(VideoCapture &capture,
-				VSSSBuffer<Mat> &processing_buffer,
+void frame_capture(VideoCapture *capture,
+				VSSSBuffer<Mat> *processing_buffer,
 				int *waitkey_buf)
 {
 
@@ -37,7 +37,7 @@ void frame_capture(VideoCapture &capture,
 
 	while (*waitkey_buf != 27 /* ESC */) {
 
-		capture >> temp_frame; // read the next frame from camera
+		(*capture) >> temp_frame; // read the next frame from camera
 
         if (temp_frame.empty())
         {
@@ -45,7 +45,7 @@ void frame_capture(VideoCapture &capture,
             break;
         }
 
-		processing_buffer.update(temp_frame);
+		processing_buffer->update(temp_frame);
 
 		nFrames++;
 		if (nFrames % 100 == 0)

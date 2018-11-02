@@ -1,4 +1,4 @@
-#include <../vision/vision.h>
+#include "../vision/vision.h"
 
 //Global variables---------------------------------------------------------------------
 VideoCapture capture;
@@ -42,6 +42,7 @@ int main(int, char**) {
     	Mat temp_frame;
     	proc_fb.get(temp_frame);
 		cv::resize(temp_frame, frame, frame.size());
+        view_fb.update(frame);
 
         if (key == 27/*ESC*/)
             break;

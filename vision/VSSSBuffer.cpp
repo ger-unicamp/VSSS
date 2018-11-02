@@ -1,10 +1,14 @@
 #include "vision.h"
 
-template <class T> VSSSBuffer<T>::VSSSBuffer() : frame_buffer() {
+template class VSSSBuffer<Mat>;
+
+template <class T>
+VSSSBuffer<T>::VSSSBuffer() {
 	this->empty = true;
 }
 
-template <class T> void VSSSBuffer<T>::get(T &t) {
+template <class T>
+void VSSSBuffer<T>::get(T &t) {
 	unique_lock<mutex> lck(this->frame_mtx);
 	while(empty) {
 		(this->not_empty).wait(lck);
@@ -14,7 +18,8 @@ template <class T> void VSSSBuffer<T>::get(T &t) {
 	lck.unlock();
 }
 
-template <class T> void VSSSBuffer<T>::update(const T &t) {
+template <class T>
+void VSSSBuffer<T>::update (T const& t) {
 	unique_lock<mutex> lck(this->frame_mtx);
 
 	this->frame_buffer = t;
