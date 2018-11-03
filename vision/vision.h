@@ -91,8 +91,4 @@ class Color
 void frame_capture(VideoCapture *capture, VSSSBuffer<Mat> *processing_buffer, int *waitkey_buf);
 void frame_show(VSSSBuffer<Mat> *view_buffer, int *waitkey_buf);
 
-uint64_t millis() {
-  return std::chrono::duration_cast<milliseconds>(std::chrono::steady_clock::now().time_since_epoch()).count();
-}
-
 #endif
