@@ -58,17 +58,6 @@ public:
 
 };
 
-
-class ImageProcessor {
-	GameState game;
-	ProgramSettings settings;
-
-
-public:
-
-
-};
-
 class Color {
 public:
 	int rmin;

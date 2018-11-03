@@ -5,10 +5,10 @@
 VideoCapture capture;
 VSSSBuffer<Mat> view_fb;
 VSSSBuffer<Mat> proc_fb;
+VSSSBuffer<GameState> game_buffer;
 
 int main(int, char **)
 {
-    Mat frame(480, 854, CV_8UC3);
 
     ProgramSettings settings("vision/calibration/data.json");
     system(settings.camera_parameters.c_str());
@@ -39,13 +39,14 @@ int main(int, char **)
     int key = 0;
     FrameCapture fc(capture, proc_fb, &key);
     GameViewer gv(view_fb, &key);
+    bool flip = false;
+    ImageProcessor ip(flip, "yellow", settings);
+    ip.start(proc_fb, view_fb, game_buffer, &key);
 
     while (13)
     {
-        Mat temp_frame;
-        proc_fb.get(temp_frame);
-        cv::resize(temp_frame, frame, frame.size());
-        view_fb.update(frame);
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
         if (key == 27 /*ESC*/)
             break;
