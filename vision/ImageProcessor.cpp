@@ -23,14 +23,93 @@ void ImageProcessor::processor(VSSSBuffer<Mat> *view_buffer, VSSSBuffer<Mat> *pr
                                VSSSBuffer<GameState> *game_buffer, int *waitkey_buf)
 {
 
-    Mat frame(480, 854, CV_8UC3);
+    Mat frame(360, 640, CV_8UC3);
 
     while (*waitkey_buf != 27 /* ESC */)
     {
+        // Get frame from FrameCapture
         Mat temp_frame;
         processing_buffer->get(temp_frame);
         cv::resize(temp_frame, frame, frame.size());
-        view_buffer->update(frame);
+
+        //Do border processing
+        set_border_manually(frame, settings.borders[0], settings.borders[1], settings.borders[2], settings.borders[3]);
+        Mat transformed_frame;
+        transform(frame, transformed_frame);
+
+        //Find objects on field
+        std::vector<Circle> primary_circles, opponent_circles, secondary_circles[3], ball_circles;
+
+        find_circles(transformed_frame, settings.colors["orange"], ball_circles);
+		find_circles(transformed_frame, settings.team_color == "yellow"? settings.colors["blue"]:settings.colors["yellow"], opponent_circles);
+		find_circles(transformed_frame, settings.colors[settings.team_color], primary_circles);
+
+		for(int i = 0; i < 3; i++)
+			find_circles(transformed_frame, settings.colors[settings.secondary_colors[i]], secondary_circles[i]);
+
+        double dWidth = transformed_frame.size().width;
+        double dHeight = transformed_frame.size().height;
+
+		for(int i = 0; i < primary_circles.size(); i++) // searches all primary_color circles
+		{
+
+			int index = 0, type = 0;
+			float min_dist = 1e8;
+			for(int j = 0; j < 3; j++) // finds closest secondary color
+				for(int k = 0; k < secondary_circles[j].size(); k++)
+					if(point_distance(primary_circles[i].center, secondary_circles[j][k].center) < min_dist)
+					{
+						min_dist = point_distance(primary_circles[i].center, secondary_circles[j][k].center);
+						index = k, type = j;
+					}
+
+			if(primary_circles[i].radius < 6 || min_dist > 15)
+				continue; // if the radius of the yellow circle is less than 8 or the secondary color is too far away (> 22), it is not a robot
+
+			// transforms the field positions to the range (10, 160) for x and (0, 130) for y
+			(this->game).robots[type].pos = {(150.0 * primary_circles[i].center.x / dWidth), (130.0 * primary_circles[i].center.y / dHeight)};
+			// calculates direction as an unitary vector
+			(this->game).robots[type].dir = { secondary_circles[type][index].center.x - primary_circles[i].center.x, secondary_circles[type][index].center.y - primary_circles[i].center.y};
+            (this->game).robots[type].dir = normalise((this->game).robots[type].dir);
+
+
+	        circle(transformed_frame, primary_circles[i].center, 4, Scalar(255, 255, 255), -1);
+	        line(transformed_frame, primary_circles[i].center, primary_circles[i].center + 2*(secondary_circles[type][index].center - primary_circles[i].center), Scalar(255, 255, 255), 2);
+			printf("\nx_robo%d=%.1f, y_robo%d=%.1f\n", type, primary_circles[i].center.x, type, primary_circles[i].center.y);
+			printf("robo%d_dir: %.1lf %.1lf\n", type, secondary_circles[type][index].center.x - primary_circles[i].center.x, secondary_circles[type][index].center.y - primary_circles[i].center.y);
+			printf("robo%d_dir: %.1lf\n", type, (M_PI + atan2(secondary_circles[type][index].center.y - primary_circles[i].center.y, secondary_circles[type][index].center.x - primary_circles[i].center.x)) * (180/M_PI));
+		}
+
+		sort(opponent_circles.begin(), opponent_circles.end());
+		for(int i = 0; i < 3 && i < opponent_circles.size(); i++)
+		{
+            (this->game).enemies[i].pos = {(150.0 * opponent_circles[i].center.x / dWidth), (130.0 * opponent_circles[i].center.y / dHeight)};
+            (this->game).enemies[i].dir = {0.0, 0.0};
+
+            circle(transformed_frame, opponent_circles[i].center, 4, Scalar(255, 255, 255), -1);
+			printf("\nx_opponent%d=%.1f, y_opponent%d=%.1f\n", i, opponent_circles[i].center.x, i, opponent_circles[i].center.y);
+		}
+
+
+		sort(ball_circles.begin(), ball_circles.end());
+		if(ball_circles.size())
+		{
+	        circle(transformed_frame, ball_circles[0].center, 4, Scalar(255, 255, 255), -1);
+			(this->game).ball.pos = {(150.0 * ball_circles[0].center.x / dWidth), (130.0 * ball_circles[0].center.y / dHeight)};
+            (this->game).ball.missing = false;
+			printf("\nx_ball=%.1f, y_ball=%.1f\n", ball_circles[0].center.x, ball_circles[0].center.y);
+		}
+        else
+        {
+            (this->game).ball.pos = {0.0, 0.0};
+            (this->game).ball.missing = true;
+        }
+
+        // TODO Flip
+
+        //Update buffers
+        game_buffer->update(this->game);
+        view_buffer->update(transformed_frame);
     }
 }
 
