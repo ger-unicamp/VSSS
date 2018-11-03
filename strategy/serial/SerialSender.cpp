@@ -88,7 +88,8 @@ SerialSender::~SerialSender()
 void SerialSender::send(int vel_1l, int vel_1r, int vel_2l, int vel_2r, int vel_3l, int vel_3r)
 {
 	sprintf(this->buffer, "[%d,%d,%d,%d,%d,%d]\n", vel_1l, vel_1r, vel_2l, vel_2r, vel_3l, vel_3r);
-	write(this->serialDescriptor, this->buffer, strlen(this->buffer));
+	if (write(this->serialDescriptor, this->buffer, strlen(this->buffer)) < 0)
+		fprintf(stderr, "Serial write error\n");
 #ifdef DEBUG_PRINT_SERIAL
 	printf("Sent %d %d %d %d %d %d\n", vel_1l, vel_1r, vel_2l, vel_2r, vel_3l, vel_3r);
 #endif
