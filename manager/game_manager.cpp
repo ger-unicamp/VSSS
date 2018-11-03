@@ -30,14 +30,11 @@ int main(int, char**) {
     cout << endl << "Press 'ESC' to quit, 'space' to toggle frame processing" << endl;
     cout << endl << "Start grabbing..." << endl;
 
-    size_t nFrames = 0;
-    bool enableProcessing = false;
-    int64 processingTime = 0;
 	int key = 0;
 	FrameCapture fc(capture, proc_fb, &key);
     GameViewer gv(view_fb, &key);
 
-    for (;;)
+    while (13)
     {
     	Mat temp_frame;
     	proc_fb.get(temp_frame);
@@ -48,6 +45,5 @@ int main(int, char**) {
             break;
     }
 
-    std::cout << "Number of captured frames: " << nFrames << endl;
-    return nFrames > 0 ? 0 : 1;
+    return 0;
 }

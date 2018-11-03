@@ -33,7 +33,6 @@ void frame_capture(VideoCapture *capture,
 
 	size_t nFrames = 0;
 	int64 t0 = cv::getTickCount();
-    int64 processingTime = 0;
 
 	while (*waitkey_buf != 27 /* ESC */) {
 
@@ -55,10 +54,8 @@ void frame_capture(VideoCapture *capture,
 		    cout << "Frames captured: " << cv::format("%5lld", (long long int)nFrames)
 		         << "    Average FPS: " << cv::format("%9.1f", (double)getTickFrequency() * N / (t1 - t0))
 		         << "    Average time per frame: " << cv::format("%9.2f ms", (double)(t1 - t0) * 1000.0f / (N * getTickFrequency()))
-		         << "    Average processing time: " << cv::format("%9.2f ms", (double)(processingTime) * 1000.0f / (N * getTickFrequency()))
 		         << std::endl;
 		    t0 = t1;
-		    processingTime = 0;
 		}
 
 	}
