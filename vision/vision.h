@@ -76,10 +76,23 @@ class Color
 		this->bmin = bmin;
 		this->bmax = bmax;
 	}
+	Color()
+	{
+		this->rmin = 0;
+		this->rmax = 0;
+		this->gmin = 0;
+		this->gmax = 0;
+		this->bmin = 0;
+		this->bmax = 0;
+	}
 };
 
 //Function declarations----------------------------------------------------------------
 void frame_capture(VideoCapture *capture, VSSSBuffer<Mat> *processing_buffer, int *waitkey_buf);
 void frame_show(VSSSBuffer<Mat> *view_buffer, int *waitkey_buf);
+
+uint64_t millis() {
+  return std::chrono::duration_cast<milliseconds>(std::chrono::steady_clock::now().time_since_epoch()).count();
+}
 
 #endif
