@@ -11,6 +11,7 @@
 #include <mutex>
 #include <chrono>
 #include <condition_variable>
+#include "../strategy/game_state.hpp"
 
 using namespace cv;
 using namespace std;
@@ -57,6 +58,35 @@ public:
 
 };
 
+
+class ImageProcessor {
+	GameState game;
+	ProgramSettings settings;
+
+
+public:
+
+
+};
+
+class Color {
+public:
+	int rmin;
+	int rmax;
+	int gmin;
+	int gmax;
+	int bmin;
+	int bmax;
+
+	Color(int rmin, int rmax, int gmin, int gmax, int bmin, int bmax) {
+		this->rmin = rmin;
+		this->rmax = rmax;
+		this->gmin = gmin;
+		this->gmax = gmax;
+		this->bmin = bmin;
+		this->bmax = bmax;
+	}
+};
 
 //Function declarations----------------------------------------------------------------
 void frame_capture(VideoCapture *capture, VSSSBuffer<Mat> *processing_buffer, int *waitkey_buf);
