@@ -55,15 +55,15 @@ call(cam_parameters.split())
 def transform(img, p0, p1, p2, p3):
     inputQuad = np.array([p0, p1, p2, p3],  dtype = "float32")  # array containing the four corners of the field
     outputQuad = np.array([( 0,0 ), # array containing the four corners of the image
-                  ( img.shape[1]-1,0),
-                  ( img.shape[1]-1,img.shape[0]-1),
-                  ( 0,img.shape[0]-1  )], dtype = "float32")
+                  ( 450-1, 0 ),
+                  ( 450-1, 390-1 ),
+                  ( 0, 390-1 )], dtype = "float32")
 
     # Get the Perspective Transform Matrix i.e. lambda
     lbd = cv2.getPerspectiveTransform(inputQuad, outputQuad)
 
     #Apply the Perspective Transform just found to the src image
-    output = cv2.warpPerspective(img,lbd,(dWidth, dHeight))
+    output = cv2.warpPerspective(img,lbd,(450, 390))
 
     return output
 
@@ -113,8 +113,9 @@ cv2.createTrackbar("P3-Y", "Control", p[3][1], dHeight, callback7)
 while(True):
     # Capture frame-by-frame
     ret, frame = cap.read()
-    # frame = cv2.resize(frame, (640, 360))
+    #frame = cv2.resize(frame, (450, 390))
     transformed_frame = transform(frame, p[0], p[1], p[2], p[3])
+    transformed_frame = cv2.fastNlMeansDenoisingColored(transformed_frame, None, 10, 10, 7, 21)
 
     cv2.circle(frame, p[0], 5, (255, 0, 0), -1);
     cv2.circle(frame, p[1], 5, (0, 255, 0), -1);
