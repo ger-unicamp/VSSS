@@ -36,5 +36,10 @@
         }
     ],
     "K": 5,
-    "camera_parameters": "echo hi"
+    "camera_parameters": "echo hi",
+    "secondary_colors": [
+        "pink",
+        "brown",
+        "green"
+    ]
 }

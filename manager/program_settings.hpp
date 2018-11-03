@@ -17,6 +17,7 @@ class ProgramSettings
 	bool flip;
 	int camera_number;
 	std::string team_color;
+	std::string secondary_colors[3];
 
 	ProgramSettings(std::string json_path, int argc, char *argv[]);
 

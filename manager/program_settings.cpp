@@ -39,12 +39,19 @@ ProgramSettings::ProgramSettings(std::string json_path, int argc, char *argv[])
 		}
 	}
 
-	/*	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < 3; i++)
+	{
+		if (json_config["secondary_colors"].is_array() && !json_config["secondary_colors"][i].is_null())
+			this->secondary_colors[i] = json_config["secondary_colors"][i];
+		cout << "Secondary color " << i << ": " << this->secondary_colors[i] << endl;
+	}
+
+	for (int i = 0; i < 4; i++)
 	{
 		this->borders.push_back(Point2f(json_config["points"][i]["x"], json_config["points"][i]["y"]));
 		cout << this->borders[i] << std::endl;
 	}
-*/
+
 	this->camera_parameters = json_config["camera_parameters"];
 
 	this->parse_command_line(argc, argv);
