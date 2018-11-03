@@ -113,7 +113,7 @@ cv2.createTrackbar("P3-Y", "Control", p[3][1], dHeight, callback7)
 while(True):
     # Capture frame-by-frame
     ret, frame = cap.read()
-    frame = cv2.resize(frame, (640, 360))
+    # frame = cv2.resize(frame, (640, 360))
     transformed_frame = transform(frame, p[0], p[1], p[2], p[3])
 
     cv2.circle(frame, p[0], 5, (255, 0, 0), -1);
