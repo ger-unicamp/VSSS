@@ -3,7 +3,7 @@ SRCDIR = vision strategy manager
 CPPFILES = $(shell find $(SRCDIR) -name '*.cpp')
 OBJFILES = $(patsubst %.cpp,%.o,$(CPPFILES))
 
-CFLAGS = -std=c++11 -march=native -Ofast -Wall -Wextra -DNDEBUG
+CFLAGS = -std=c++11 -march=native -Ofast -Wall -Wextra -DNDEBUG -I./json_library/single_include
 CFLAGS += $(shell pkg-config --cflags opencv)
 
 LDFLAGS = -larmadillo -pthread -L/usr/local/lib/ -lopencv_core -lopencv_imgproc
