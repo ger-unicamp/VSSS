@@ -1,36 +1,36 @@
 {
  "colors": {
   "green": {
-   "B_max": 227,
-   "B_min": 163,
-   "G_max": 196,
-   "G_min": 137,
-   "R_max": 152,
-   "R_min": 63
+   "B_max": 140,
+   "B_min": 68,
+   "G_max": 128,
+   "G_min": 85,
+   "R_max": 53,
+   "R_min": 6
   },
   "pink": {
-   "B_max": 128,
-   "B_min": 61,
-   "G_max": 120,
-   "G_min": 33,
-   "R_max": 82,
-   "R_min": 2
+   "B_max": 181,
+   "B_min": 78,
+   "G_max": 108,
+   "G_min": 7,
+   "R_max": 217,
+   "R_min": 116
   },
   "brown": {
-   "B_max": 170,
-   "B_min": 86,
-   "G_max": 118,
-   "G_min": 37,
-   "R_max": 182,
-   "R_min": 101
+   "B_max": 109,
+   "B_min": 2,
+   "G_max": 123,
+   "G_min": 12,
+   "R_max": 170,
+   "R_min": 64
   },
   "orange": {
-   "B_max": 179,
-   "B_min": 106,
-   "G_max": 143,
-   "G_min": 79,
-   "R_max": 141,
-   "R_min": 54
+   "B_max": 67,
+   "B_min": 0,
+   "G_max": 58,
+   "G_min": 0,
+   "R_max": 252,
+   "R_min": 160
   },
   "red": {
    "B_max": 8,
@@ -41,20 +41,20 @@
    "R_min": 166
   },
   "blue": {
-   "B_max": 76,
-   "B_min": 0,
-   "G_max": 63,
-   "G_min": 0,
-   "R_max": 171,
-   "R_min": 69
+   "B_max": 201,
+   "B_min": 142,
+   "G_max": 123,
+   "G_min": 79,
+   "R_max": 68,
+   "R_min": 2
   },
   "yellow": {
-   "B_max": 68,
-   "B_min": 2,
-   "G_max": 198,
-   "G_min": 157,
-   "R_max": 214,
-   "R_min": 172
+   "B_max": 53,
+   "B_min": 0,
+   "G_max": 206,
+   "G_min": 159,
+   "R_max": 235,
+   "R_min": 190
   }
  },
  "points": [
@@ -75,6 +75,6 @@
    "y": 620
   }
  ],
- "K": 15,
+ "K": 16,
  "camera_parameters": "v4l2-ctl -d /dev/video2 -c saturation=255 -c gain=255 -c exposure_auto=1 -c exposure_absolute=40 -c focus_auto=0"
 }
