@@ -17,10 +17,13 @@ try:
         p[i] = (p[i]['x'], p[i]['y'])
 
     K = data['K']
-    cam_parameters = data['camera_parameters']
 
 except:
     print("JSON file doesn't exist yet")
+
+    data = {}
+
+    data['colors'] = {}
 
     p = []
     for i in range(4):
@@ -33,8 +36,14 @@ except:
     p[2] = (567, 480)
     p[3] = (55, 455)
 
-    K = 20
+    K = 15
 
+try:
+    with open("data.json") as f:
+        data = json.load(f)
+    cam_parameters = data['camera_parameters']
+
+except:
     cam_parameters = f"v4l2-ctl -d /dev/video{argv1} -c saturation=255 -c gain=255 -c exposure_auto=1 -c exposure_absolute=40 -c focus_auto=0"
 
 
@@ -192,7 +201,6 @@ for i in range(K):
 
 #       --> write to JSON file "data" <--
 color_dict = {}
-data = {}
 
 for i in range(len(color_list)):
     color_list[i][1] = {'B_max': int(max_color_values[i][0]), 'B_min': int(min_color_values[i][0]),
@@ -203,7 +211,8 @@ for i in range(len(color_list)):
 for i in range(4):
     p[i] = {'x': p[i][0], 'y': p[i][1]}
 
-data['colors'] = color_dict
+for color in color_dict:
+    data['colors'][color] = color_dict[color]
 data['points'] = p
 data['K'] = K
 data['camera_parameters'] = cam_parameters
