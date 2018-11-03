@@ -63,7 +63,7 @@ def transform(img, p0, p1, p2, p3):
     lbd = cv2.getPerspectiveTransform(inputQuad, outputQuad)
 
     #Apply the Perspective Transform just found to the src image
-    output = cv2.warpPerspective(img,lbd,(640, 360))
+    output = cv2.warpPerspective(img,lbd,(dWidth, dHeight))
 
     return output
 
