@@ -13,18 +13,18 @@ Install Armadillo:
 		sudo apt-get install libarmadillo-dev
 */
 
-class Robot {
+struct Robot {
 	arma::vec2 pos; // (x, y) robot position in centimeters.
 	arma::vec2 dir; // Unit vector indicating robot direction.
 	bool missing; // True if robot is not being seen.
 };
 
-class Ball {
+struct Ball {
 	arma::vec2 pos; // Ball position
 	bool missing; // True if ball is not being seen.
 };
 
-class GameState {
+struct GameState {
 	Ball ball; // Ball Position (x, y) in centimeters.
 	std::vector<Robot> robots; // Friendly robots.
 	std::vector<Robot> enemies; // Enemy robots.
