@@ -1,33 +1,46 @@
 import numpy as np
 import cv2
 import json
+from subprocess import call
+import sys
+
+argv1 = sys.argv[1] #get camera number as terminal argument
+
 
 #       --> read JSON file "data" <--
 try:
     with open('data.json') as f:
         data = json.load(f)
-    color_list = []
+
     p = data['points']
     for i in range(4):
         p[i] = (p[i]['x'], p[i]['y'])
-    for color in (data['colors']):
-        bgr = (data['colors'][color]['B'], data['colors'][color]['G'], data['colors'][color]['R'])
-        color_list.append([color, bgr])
+
     K = data['K']
+    cam_parameters = data['camera_parameters']
 
 except:
     print("JSON file doesn't exist yet")
-    color_list = []
+
     p = []
     for i in range(4):
         ponto = ()
         p.append(ponto)
+
     #set points as corners of the cam img
     p[0] = (89, 2)
     p[1] = (597, 30)
     p[2] = (567, 480)
     p[3] = (55, 455)
-    K = 1
+
+    K = 20
+
+    cam_parameters = f"v4l2-ctl -d /dev/video{argv1} -c saturation=255 -c gain=255 -c exposure_auto=1 -c exposure_absolute=40 -c focus_auto=0"
+
+
+#       --> set camera parameters <--
+call(cam_parameters.split())
+
 
 #       --> border calibration <--
 def transform(img, p0, p1, p2, p3):
@@ -36,15 +49,14 @@ def transform(img, p0, p1, p2, p3):
                   ( img.shape[1]-1,0),
                   ( img.shape[1]-1,img.shape[0]-1),
                   ( 0,img.shape[0]-1  )], dtype = "float32")
-# Get the Perspective Transform Matrix i.e. lambda
+
+    # Get the Perspective Transform Matrix i.e. lambda
     lbd = cv2.getPerspectiveTransform(inputQuad, outputQuad)
 
     #Apply the Perspective Transform just found to the src image
-    output = cv2.warpPerspective(img,lbd,(dWidth, dHeight))
+    output = cv2.warpPerspective(img,lbd,(640, 360))
 
     return output
-
-argv1 = input() #camera number
 
 cap = cv2.VideoCapture(int(argv1))
 
@@ -52,6 +64,8 @@ if not cap.isOpened():
     print("Can't open the video cam")
     quit()
 
+cap.set(3, 1280)
+cap.set(4, 720)
 dWidth = int(cap.get(3)) #get the width of frames of the video
 dHeight = int(cap.get(4)) #get the height of frames of the video
 print("Frame size:", dWidth, "x", dHeight) #print image size
@@ -90,6 +104,7 @@ cv2.createTrackbar("P3-Y", "Control", p[3][1], dHeight, callback7)
 while(True):
     # Capture frame-by-frame
     ret, frame = cap.read()
+    frame = cv2.resize(frame, (640, 360))
     transformed_frame = transform(frame, p[0], p[1], p[2], p[3])
 
     cv2.circle(frame, p[0], 5, (255, 0, 0), -1);
@@ -120,83 +135,78 @@ Z = np.float32(Z)
 # define criteria, number of clusters(K) and apply kmeans()
 criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 1000, 1e-4)
 
-#Window of the trackbars "K" and "switch"
-cv2.namedWindow("Number of clusters", cv2.WINDOW_AUTOSIZE)
-
-#callback function for the trackbars
-def nothing(x):
-    pass
-
-#trackbar to set the number of clusters
-cv2.createTrackbar("K", "Number of clusters", 1, 30, nothing)
-cv2.setTrackbarPos("K", "Number of clusters", K)
-
-# create switch for ON/OFF functionality
-cv2.createTrackbar("switch", 'Number of clusters', 0, 1, nothing)
-
 while(True):
-    K = cv2.getTrackbarPos('K','Number of clusters')
-    s = cv2.getTrackbarPos('switch','Number of clusters')
-    if s == 1:
-        ret, label, center = cv2.kmeans(Z, K, None, criteria, 10, cv2.KMEANS_RANDOM_CENTERS)
-        # Now convert back into uint8, and make original image
-        center = np.uint8(center)
-        res = center[label.flatten()]
-        res2 = res.reshape((img.shape))
+    ret, label, center = cv2.kmeans(Z, K, None, criteria, 10, cv2.KMEANS_RANDOM_CENTERS)
 
-        #create numbered color rectangles of each cluster
-        retangulos = np.zeros((200, 1200, 3), np.uint8)
-        rect_size = 1200 // K
-        for i in range(K):
-            color_rect = tuple([int(x) for x in center[i]])
-            cv2.rectangle(retangulos, (i*rect_size, 0), ((i+1)*rect_size, 150), color_rect, thickness=-1)
-            cv2.putText(retangulos, str(i), (i*rect_size + rect_size//2 - 15, 185), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), thickness=3)
+    # Now convert back into uint8, and make original image
+    center = np.uint8(center)
+    res = center[label.flatten()]
+    res2 = res.reshape((img.shape))
 
-        #display original image, clustered image and color rectangles
-        cv2.imshow('img',img)
-        cv2.imshow('img_clusterizada',res2)
-        cv2.imshow('cores', retangulos)
-        cv2.waitKey(0)
+    #create numbered color rectangles of each cluster
+    retangulos = np.zeros((200, 1200, 3), np.uint8)
+    rect_size = 1200 // K
+    for i in range(K):
+        color_rect = tuple([int(x) for x in center[i]])
+        cv2.rectangle(retangulos, (i*rect_size, 0), ((i+1)*rect_size, 150), color_rect, thickness=-1)
+        cv2.putText(retangulos, str(i), (i*rect_size + rect_size//2 - 15, 185), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), thickness=3)
 
-    elif s == 0:
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
+    #display original image, clustered image and color rectangles
+    cv2.imshow('img',img)
+    cv2.imshow('clusterized_img',res2)
+    cv2.imshow('colors', retangulos)
+    cv2.waitKey(30)
+    cv2.imshow('img',img)
+    cv2.imshow('clusterized_img',res2)
+    cv2.imshow('colors', retangulos)
+    cv2.waitKey(30)
 
+    #get value for K
+    tmp = input('Insert number of clusters: ')
+    if tmp == 'q':
+        break
+    else:
+        K = int(tmp)
+
+color_list = []
+label = list(label.flatten())
+max_color_values = []
+min_color_values = []
 recognizable_color_names = ['blue', 'yellow', 'orange', 'pink', 'green', 'purple', 'red', 'brown', '']
+
 for i in range(K):
     color_name = input('Cluster {}: '.format(i))
     while color_name not in recognizable_color_names:
         print("Unrecognizable color.")
         color_name = input('Cluster {}: '.format(i))
-    color_list.append([color_name, tuple([int(x) for x in center[i]]), i])
-    print(color_list)
-label = list(label.flatten())
 
-max_color_values = []
-min_color_values = []
-for i in range(K):
-    x = [Z[j] for j in range(len(label)) if label[j] == i]
-    x = np.array(x)
-    max_color_values.append((np.max(x[:,0]), np.max(x[:,1]), np.max(x[:,2])))
-    min_color_values.append((np.min(x[:,0]), np.min(x[:,1]), np.min(x[:,2])))
+    if color_name != '':
+        color_list.append([color_name, tuple([int(x) for x in center[i]]), i])
+
+        #get max and min BGR values for each named color
+        x = [Z[j] for j in range(len(label)) if label[j] == i]
+        x = np.array(x)
+        max_color_values.append((np.max(x[:,0]), np.max(x[:,1]), np.max(x[:,2])))
+        min_color_values.append((np.min(x[:,0]), np.min(x[:,1]), np.min(x[:,2])))
 
 
 #       --> write to JSON file "data" <--
-data = {}
 color_dict = {}
-for color in color_list:
-    ind = color[2]
-    color[1] = {'B_max': int(max_color_values[ind][0]), 'B_min': int(min_color_values[ind][0]),
-                'G_max': int(max_color_values[ind][1]), 'G_min': int(min_color_values[ind][1]),
-                'R_max': int(max_color_values[ind][2]), 'R_min': int(min_color_values[ind][2])}
-    color_dict[color[0]] = color[1]
+data = {}
+
+for i in range(len(color_list)):
+    color_list[i][1] = {'B_max': int(max_color_values[i][0]), 'B_min': int(min_color_values[i][0]),
+                        'G_max': int(max_color_values[i][1]), 'G_min': int(min_color_values[i][1]),
+                        'R_max': int(max_color_values[i][2]), 'R_min': int(min_color_values[i][2])}
+    color_dict[color_list[i][0]] = color_list[i][1]
+
 for i in range(4):
     p[i] = {'x': p[i][0], 'y': p[i][1]}
+
 data['colors'] = color_dict
 data['points'] = p
 data['K'] = K
-if '' in data['colors']:
-    data['colors'].pop('')
+data['camera_parameters'] = cam_parameters
 
-with open('data.json', 'w') as colors_file:
-        json.dump(data, colors_file, indent=True, ensure_ascii=False)
+with open('data.json', 'w') as f:
+    json.dump(data, f, indent=True, ensure_ascii=False)
