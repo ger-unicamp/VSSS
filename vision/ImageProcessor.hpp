@@ -36,7 +36,7 @@ class ImageProcessor
 
 // returns the transformed field
 // the four corners are found from "input" and a new image is created
-Mat transform(Mat input);
+void transform(const Mat &input, Mat &output);
 // returns a binary image created from "input" where a pixel is white if
 // the input pixel belongs to the color_range given
 void find_color(const Mat &input, Mat &binary_image, Color color);
@@ -44,7 +44,7 @@ void find_color(const Mat &input, Mat &binary_image, Color color);
 // and stores the minimum enclosing circle for each contour in the res vector
 void find_circles(const Mat &imagem, Color color_sought, vector<Circle> &res);
 // set manually the four point to transform the image
-void set_border_manually(Mat input, Point2f p0, Point2f p1, Point2f p2, Point2f p3);
+void set_border_manually(const Mat &input, Point2f p0, Point2f p1, Point2f p2, Point2f p3);
 
 float point_distance(Point2f a, Point2f b);
 

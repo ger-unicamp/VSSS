@@ -12,6 +12,7 @@ int main(int argc, char *argv[])
 {
 	ProgramSettings settings("vision/calibration/data.json", argc, argv);
 
+	cout << settings.camera_parameters << endl;
 	if (system(settings.camera_parameters.c_str()))
 	{
 		cerr << "ERROR: Could not set camera parameters" << endl;
