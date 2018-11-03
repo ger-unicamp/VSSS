@@ -1,85 +1,93 @@
 
 #include "SerialSender.hpp"
 
-SerialSender::SerialSender(const char *serialPath, unsigned int baud) {
+SerialSender::SerialSender(const char *serialPath, unsigned int baud)
+{
 
 	this->serialDescriptor = open(serialPath, O_RDWR | O_NOCTTY | O_NDELAY);
 
-    if (this->serialDescriptor < 0) {
-         throw std::runtime_error("Port Failed to Open");
-    }
-	else {
+	if (this->serialDescriptor < 0)
+	{
+		throw std::runtime_error("Port Failed to Open");
+	}
+	else
+	{
 		struct termios options;
 		// Sets the read() function to return NOW and not wait for data to enter buffer if there isn't anything there.
 		fcntl(this->serialDescriptor, F_SETFL, FNDELAY);
 
-		if (tcgetattr(this->serialDescriptor, &options) < 0) {
+		if (tcgetattr(this->serialDescriptor, &options) < 0)
+		{
 			throw std::runtime_error("Failed to get terminal attributes");
 		} //Gets the current options for the port
 
 		// Selection of BAUD Rate
-		switch (baud) {
-			case 2400:
-				cfsetispeed(&options, B2400);	//Sets the Input Baud Rate
-				cfsetospeed(&options, B2400);	//Sets the Output Baud Rate
-				break;
-			case 4800:
-				cfsetispeed(&options, B4800);
-				cfsetospeed(&options, B4800);
-				break;
-			case 9600:
-				cfsetispeed(&options, B9600);
-				cfsetospeed(&options, B9600);
-				break;
-			case 19200:
-				cfsetispeed(&options, B19200);
-				cfsetospeed(&options, B19200);
-				break;
-			case 38400:
-				cfsetispeed(&options, B38400);
-				cfsetospeed(&options, B38400);
-				break;
-			case 57600:
-				cfsetispeed(&options, B57600);
-				cfsetospeed(&options, B57600);
-				break;
-			case 115200:
-				cfsetispeed(&options, B115200);
-				cfsetospeed(&options, B115200);
-				break;
-			default:
-				cfsetispeed(&options, B9600);
-				cfsetospeed(&options, B9600);
-				break;
+		switch (baud)
+		{
+		case 2400:
+			cfsetispeed(&options, B2400); //Sets the Input Baud Rate
+			cfsetospeed(&options, B2400); //Sets the Output Baud Rate
+			break;
+		case 4800:
+			cfsetispeed(&options, B4800);
+			cfsetospeed(&options, B4800);
+			break;
+		case 9600:
+			cfsetispeed(&options, B9600);
+			cfsetospeed(&options, B9600);
+			break;
+		case 19200:
+			cfsetispeed(&options, B19200);
+			cfsetospeed(&options, B19200);
+			break;
+		case 38400:
+			cfsetispeed(&options, B38400);
+			cfsetospeed(&options, B38400);
+			break;
+		case 57600:
+			cfsetispeed(&options, B57600);
+			cfsetospeed(&options, B57600);
+			break;
+		case 115200:
+			cfsetispeed(&options, B115200);
+			cfsetospeed(&options, B115200);
+			break;
+		default:
+			cfsetispeed(&options, B9600);
+			cfsetospeed(&options, B9600);
+			break;
 		}
 
 		// Options for 8N1 serial operations
-		options.c_cflag |= (CLOCAL | CREAD);		// turn on READ & ignore ctrl lines
-		options.c_cflag &= ~PARENB;					// No parity bit
-		options.c_cflag &= ~CSTOPB;					// One stop bit only
-		options.c_cflag &= ~CSIZE;					// 8bit size
+		options.c_cflag |= (CLOCAL | CREAD); // turn on READ & ignore ctrl lines
+		options.c_cflag &= ~PARENB;			 // No parity bit
+		options.c_cflag &= ~CSTOPB;			 // One stop bit only
+		options.c_cflag &= ~CSIZE;			 // 8bit size
 		options.c_cflag |= CS8;
 
-		if (tcsetattr(this->serialDescriptor, TCSANOW, &options) < 0) {
+		if (tcsetattr(this->serialDescriptor, TCSANOW, &options) < 0)
+		{
 			throw std::runtime_error("Failed to set terminal attributes");
-		}	//Set the new options for the port "NOW"
-
+		} //Set the new options for the port "NOW"
 	}
 }
 
-void SerialSender::serialclose() {
-	if (this->serialDescriptor >= 0) {
-        close(this->serialDescriptor);
-    }
+void SerialSender::serialclose()
+{
+	if (this->serialDescriptor >= 0)
+	{
+		close(this->serialDescriptor);
+	}
 }
 
 SerialSender::~SerialSender()
 {
-    this->serialclose();
+	this->serialclose();
 }
 
-void SerialSender::send(int vel_1l, int vel_1r, int vel_2l, int vel_2r, int vel_3l, int vel_3r) {
-    sprintf(this->buffer, "[%d,%d,%d,%d,%d,%d]\n", vel_1l, vel_1r, vel_2l, vel_2r, vel_3l, vel_3r);
+void SerialSender::send(int vel_1l, int vel_1r, int vel_2l, int vel_2r, int vel_3l, int vel_3r)
+{
+	sprintf(this->buffer, "[%d,%d,%d,%d,%d,%d]\n", vel_1l, vel_1r, vel_2l, vel_2r, vel_3l, vel_3r);
 	write(this->serialDescriptor, this->buffer, strlen(this->buffer));
 #ifdef DEBUG_PRINT_SERIAL
 	printf("Sent %d %d %d %d %d %d\n", vel_1l, vel_1r, vel_2l, vel_2r, vel_3l, vel_3r);

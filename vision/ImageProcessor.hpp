@@ -2,41 +2,37 @@
 #ifndef IMAGEPROCESSOR_H
 #define IMAGEPROCESSOR_H
 
-#include <math>
 #include "vision.h"
+#include "../manager/program_settings.hpp"
 
-struct Circle{
+struct Circle
+{
 	Point2f center;
 	float radius;
-	Circle(){}
+	Circle() {}
 	Circle(Point2f _center, float _radius) : center(_center), radius(_radius) {}
 
-	bool operator < (Circle a) const { return radius > a.radius; }
+	bool operator<(Circle a) const { return radius > a.radius; }
 };
 
-class ImageProcessor {
+class ImageProcessor
+{
 	GameState game;
-	ProgramSettings settings;
 	bool flip;
 	std::string team_color;
+	ProgramSettings settings;
 	std::thread processor_th;
 
-public:
-
-	ImageProcessor(bool _flip, std::string _team_color): flip(_flip), team_color(_team_color) {}
+  public:
 	ImageProcessor(bool _flip, std::string _team_color, ProgramSettings &settings);
 	~ImageProcessor();
 
-	void setParameters(ProgramSettings &settings);
 	void start(VSSSBuffer<Mat> &view_buffer, VSSSBuffer<Mat> &processing_buffer,
-		VSSSBuffer<GameState> &game_buffer, int *waitkey_buf);
+			   VSSSBuffer<GameState> &game_buffer, int *waitkey_buf);
 
 	void processor(VSSSBuffer<Mat> *view_buffer, VSSSBuffer<Mat> *processing_buffer,
-		VSSSBuffer<GameState> *game_buffer, int *waitkey_buf);
-
-
+				   VSSSBuffer<GameState> *game_buffer, int *waitkey_buf);
 };
-
 
 // returns the transformed field
 // the four corners are found from "input" and a new image is created

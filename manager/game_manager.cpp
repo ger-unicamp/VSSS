@@ -1,4 +1,5 @@
 #include "../vision/vision.h"
+#include "../vision/ImageProcessor.hpp"
 #include "program_settings.hpp"
 
 //Global variables---------------------------------------------------------------------
@@ -41,7 +42,7 @@ int main(int, char **)
     GameViewer gv(view_fb, &key);
     bool flip = false;
     ImageProcessor ip(flip, "yellow", settings);
-    ip.start(proc_fb, view_fb, game_buffer, &key);
+    ip.start(view_fb, proc_fb, game_buffer, &key);
 
     while (13)
     {

@@ -22,14 +22,16 @@
 #define DEBUG_PRINT_SERIAL
 //#undef DEBUG_PRINT_SERIAL
 
-class SerialSender {
-private:
+class SerialSender
+{
+  private:
     int serialDescriptor;
     char buffer[1000];
-public:
+
+  public:
     SerialSender(const char *serialPath, unsigned int baud);
     ~SerialSender();
-	void serialclose();
+    void serialclose();
     void send(int vel_1l, int vel_1r, int vel_2l, int vel_2r, int vel_3l, int vel_3r);
 };
 

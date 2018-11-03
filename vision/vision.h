@@ -4,7 +4,7 @@
 #include <opencv2/core.hpp>
 #include <opencv2/videoio.hpp>
 #include <opencv2/highgui.hpp>
-#include <opencv2/imgproc.hpp>  // cv::Canny()
+#include <opencv2/imgproc.hpp> // cv::Canny()
 #include <iostream>
 #include "opencv2/imgcodecs.hpp"
 #include <thread>
@@ -18,48 +18,48 @@ using namespace std;
 
 //Classes------------------------------------------------------------------------------
 template <class T>
-class VSSSBuffer {
+class VSSSBuffer
+{
 	bool empty;
 	T frame_buffer;
 	condition_variable not_empty;
 	mutex frame_mtx;
 
-public:
-
+  public:
 	VSSSBuffer();
-	void update(T const& t);
+	void update(T const &t);
 	void get(T &t);
 };
 
-class FrameCapture {
+class FrameCapture
+{
 	std::thread frame_capture_th;
 
-public:
-
+  public:
 	FrameCapture();
 	FrameCapture(VideoCapture &capture,
-		 		VSSSBuffer<Mat> &processing_buffer,
-	  	 		int *waitkey_buf);
+				 VSSSBuffer<Mat> &processing_buffer,
+				 int *waitkey_buf);
 	~FrameCapture();
 	void start(VideoCapture &capture,
-		 		VSSSBuffer<Mat> &processing_buffer,
-	  	 		int *waitkey_buf);
-
+			   VSSSBuffer<Mat> &processing_buffer,
+			   int *waitkey_buf);
 };
 
-class GameViewer {
+class GameViewer
+{
 	std::thread frame_show_th;
 
-public:
+  public:
 	GameViewer();
 	GameViewer(VSSSBuffer<Mat> &view_buffer, int *waitkey_buf);
 	~GameViewer();
 	void start(VSSSBuffer<Mat> &view_buffer, int *waitkey_buf);
-
 };
 
-class Color {
-public:
+class Color
+{
+  public:
 	int rmin;
 	int rmax;
 	int gmin;
@@ -67,7 +67,8 @@ public:
 	int bmin;
 	int bmax;
 
-	Color(int rmin, int rmax, int gmin, int gmax, int bmin, int bmax) {
+	Color(int rmin, int rmax, int gmin, int gmax, int bmin, int bmax)
+	{
 		this->rmin = rmin;
 		this->rmax = rmax;
 		this->gmin = gmin;
