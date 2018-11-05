@@ -16,22 +16,26 @@ ImageProcessor::~ImageProcessor()
 	}
 }
 
-void ImageProcessor::start(VSSSBuffer<Mat> &view_buffer, VSSSBuffer<Mat> &processing_buffer,
+void ImageProcessor::start(VSSSBuffer<vector<Mat>> &view_buffer, VSSSBuffer<Mat> &processing_buffer,
 						   VSSSBuffer<GameState> &game_buffer, int *waitkey_buf)
 {
 	this->processor_th = std::thread(&ImageProcessor::processor, this, &view_buffer, &processing_buffer,
 									 &game_buffer, waitkey_buf);
 }
 
-void ImageProcessor::processor(VSSSBuffer<Mat> *view_buffer, VSSSBuffer<Mat> *processing_buffer,
+typedef std::chrono::duration<long long, std::ratio<1ll, 1000000000ll>> duration;
+
+void ImageProcessor::processor(VSSSBuffer<vector<Mat>> *view_buffer, VSSSBuffer<Mat> *processing_buffer,
 							   VSSSBuffer<GameState> *game_buffer, int *waitkey_buf)
 {
 
-	Mat frame(360, 640, CV_8UC3);
+	Mat frame;
 	set_border_manually(frame, settings.borders[0], settings.borders[1], settings.borders[2], settings.borders[3]);
 	Mat transformed_frame;
 
-	while (*waitkey_buf != 27 /* ESC */)
+	int sw_key = 0;
+
+	while (*waitkey_buf != ESC_CHAR)
 	{
 		this->game = GameState();
 
@@ -41,9 +45,12 @@ void ImageProcessor::processor(VSSSBuffer<Mat> *view_buffer, VSSSBuffer<Mat> *pr
 		// cv::resize(temp_frame, frame, frame.size());
 
 		processing_buffer->get(frame);
+		auto processing_start = chrono::high_resolution_clock::now();
 
 		//Do border processing
 		transform(frame, transformed_frame);
+
+		cvtColor(transformed_frame, transformed_frame, COLOR_BGR2Lab);
 
 		//Find objects on field
 		std::vector<Circle> primary_circles, opponent_circles, secondary_circles[3], ball_circles;
@@ -58,6 +65,9 @@ void ImageProcessor::processor(VSSSBuffer<Mat> *view_buffer, VSSSBuffer<Mat> *pr
 		double dWidth = transformed_frame.size().width;
 		double dHeight = transformed_frame.size().height;
 
+		Mat processed_frame = transformed_frame.clone();
+		cvtColor(transformed_frame, transformed_frame, COLOR_Lab2BGR);
+
 		for (int i = 0; i < (int)primary_circles.size(); i++) // searches all primary_color circles
 		{
 
@@ -71,11 +81,12 @@ void ImageProcessor::processor(VSSSBuffer<Mat> *view_buffer, VSSSBuffer<Mat> *pr
 						index = k, type = j;
 					}
 
-			if (primary_circles[i].radius < 6 || min_dist > 15)
+			if (primary_circles[i].radius * FIELD_WIDTH / dWidth < 1.5 || min_dist * FIELD_WIDTH / dWidth > 5)
 				continue; // if the radius of the yellow circle is less than 8 or the secondary color is too far away (> 22), it is not a robot
 
 			// transforms the field positions to the range (10, 160) for x and (0, 130) for y
-			(this->game).robots[type].pos = {(150.0 * primary_circles[i].center.x / dWidth), (130.0 * primary_circles[i].center.y / dHeight)};
+			(this->game).robots[type].pos = {(FIELD_WIDTH * primary_circles[i].center.x / dWidth), (FIELD_HEIGHT * primary_circles[i].center.y / dHeight)};
+			(this->game).robots[type].missing = false;
 			// calculates direction as an unitary vector
 			(this->game).robots[type].dir = {secondary_circles[type][index].center.x - primary_circles[i].center.x, secondary_circles[type][index].center.y - primary_circles[i].center.y};
 			(this->game).robots[type].dir = normalise((this->game).robots[type].dir);
@@ -90,8 +101,9 @@ void ImageProcessor::processor(VSSSBuffer<Mat> *view_buffer, VSSSBuffer<Mat> *pr
 		sort(opponent_circles.begin(), opponent_circles.end());
 		for (int i = 0; i < 3 && i < (int)opponent_circles.size(); i++)
 		{
-			(this->game).enemies[i].pos = {(150.0 * opponent_circles[i].center.x / dWidth), (130.0 * opponent_circles[i].center.y / dHeight)};
+			(this->game).enemies[i].pos = {(FIELD_WIDTH * opponent_circles[i].center.x / dWidth), (FIELD_HEIGHT * opponent_circles[i].center.y / dHeight)};
 			(this->game).enemies[i].dir = {0.0, 0.0};
+			(this->game).enemies[i].missing = false;
 
 			circle(transformed_frame, opponent_circles[i].center, 4, Scalar(255, 255, 255), -1);
 			printf("\nx_opponent%d=%.1f, y_opponent%d=%.1f\n", i, opponent_circles[i].center.x, i, opponent_circles[i].center.y);
@@ -101,7 +113,7 @@ void ImageProcessor::processor(VSSSBuffer<Mat> *view_buffer, VSSSBuffer<Mat> *pr
 		if (ball_circles.size())
 		{
 			circle(transformed_frame, ball_circles[0].center, 4, Scalar(255, 255, 255), -1);
-			(this->game).ball.pos = {(150.0 * ball_circles[0].center.x / dWidth), (130.0 * ball_circles[0].center.y / dHeight)};
+			(this->game).ball.pos = {(FIELD_WIDTH * ball_circles[0].center.x / dWidth), (FIELD_HEIGHT * ball_circles[0].center.y / dHeight)};
 			(this->game).ball.missing = false;
 			printf("\nx_ball=%.1f, y_ball=%.1f\n", ball_circles[0].center.x, ball_circles[0].center.y);
 		}
@@ -111,11 +123,57 @@ void ImageProcessor::processor(VSSSBuffer<Mat> *view_buffer, VSSSBuffer<Mat> *pr
 			(this->game).ball.missing = true;
 		}
 
+		auto processing_finish = chrono::high_resolution_clock::now();
+		duration total_time = processing_finish - processing_start;
+		cout << "Processing time (ms): " << total_time.count() / 1e6 << endl;
+
+		game_buffer->update(this->game);
+
 		// TODO Flip
 
+		vector<Mat> frames_vec;
+		frames_vec.push_back(transformed_frame.clone());
+
+		transformed_frame = processed_frame;
+
+		Color clr;
+		if (*waitkey_buf > 0 && *waitkey_buf < 255)
+			sw_key = *waitkey_buf;
+
+		switch (sw_key)
+		{
+		case 'r':
+			clr = settings.colors["red"];
+			break;
+		case 'g':
+			clr = settings.colors["green"];
+			break;
+		case 'b':
+			clr = settings.colors["blue"];
+			break;
+		case 'o':
+			clr = settings.colors["orange"];
+			break;
+		case 'p':
+			clr = settings.colors["pink"];
+			break;
+		case 'y':
+			clr = settings.colors["yellow"];
+			break;
+		case 'w':
+			clr = settings.colors["brown"];
+			break;
+		case 'd':
+		default:
+			clr = Color(0, 255, 0, 255, 0, 255);
+			break;
+		}
+
+		find_color(transformed_frame, transformed_frame, clr);
+		frames_vec.push_back(transformed_frame);
+
 		//Update buffers
-		game_buffer->update(this->game);
-		view_buffer->update(transformed_frame);
+		view_buffer->update(frames_vec);
 	}
 }
 
@@ -135,9 +193,9 @@ void set_border_manually(const Mat &input, Point2f p0, Point2f p1, Point2f p2, P
 
 	// The 4 points where the mapping is to be done , from top-left in clockwise order
 	outputQuad[0] = Point2f(0, 0);
-	outputQuad[1] = Point2f(449, 0);
-	outputQuad[2] = Point2f(449, 389);
-	outputQuad[3] = Point2f(0, 389);
+	outputQuad[1] = Point2f(TRANSFORMED_FRAME_WIDTH - 1, 0);
+	outputQuad[2] = Point2f(TRANSFORMED_FRAME_WIDTH - 1, TRANSFORMED_FRAME_HEIGHT - 1);
+	outputQuad[3] = Point2f(0, TRANSFORMED_FRAME_HEIGHT - 1);
 
 	// Get the Perspective Transform Matrix i.e. lambda
 	lambda = getPerspectiveTransform(inputQuad, outputQuad);
@@ -146,7 +204,7 @@ void set_border_manually(const Mat &input, Point2f p0, Point2f p1, Point2f p2, P
 void transform(const Mat &input, Mat &output)
 {
 	// Apply the Perspective Transform just found to the src image
-	warpPerspective(input, output, lambda, Size(450, 390));
+	warpPerspective(input, output, lambda, Size(TRANSFORMED_FRAME_WIDTH, TRANSFORMED_FRAME_HEIGHT));
 }
 
 void find_color(const Mat &input, Mat &binary_image, Color color)

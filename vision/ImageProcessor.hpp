@@ -4,6 +4,7 @@
 
 #include "vision.h"
 #include "../manager/program_settings.hpp"
+#include "../manager/constants.h"
 
 struct Circle
 {
@@ -27,10 +28,10 @@ class ImageProcessor
 	ImageProcessor(bool _flip, std::string _team_color, ProgramSettings &settings);
 	~ImageProcessor();
 
-	void start(VSSSBuffer<Mat> &view_buffer, VSSSBuffer<Mat> &processing_buffer,
+	void start(VSSSBuffer<vector<Mat>> &view_buffer, VSSSBuffer<Mat> &processing_buffer,
 			   VSSSBuffer<GameState> &game_buffer, int *waitkey_buf);
 
-	void processor(VSSSBuffer<Mat> *view_buffer, VSSSBuffer<Mat> *processing_buffer,
+	void processor(VSSSBuffer<vector<Mat>> *view_buffer, VSSSBuffer<Mat> *processing_buffer,
 				   VSSSBuffer<GameState> *game_buffer, int *waitkey_buf);
 };
 

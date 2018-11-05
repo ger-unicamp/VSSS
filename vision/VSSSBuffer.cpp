@@ -1,6 +1,7 @@
 #include "vision.h"
 
 template class VSSSBuffer<Mat>;
+template class VSSSBuffer<vector<Mat>>;
 template class VSSSBuffer<GameState>;
 
 template <class T>

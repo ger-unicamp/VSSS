@@ -26,9 +26,9 @@ ProgramSettings::ProgramSettings(std::string json_path, int argc, char *argv[])
 	json json_config;
 	in_file >> json_config;
 
-	string arr_valid_colors[8] = {"blue", "yellow", "orange", "pink", "green", "purple", "red", "brown"};
+	string arr_valid_colors[9] = {"blue", "salmon", "yellow", "orange", "pink", "green", "purple", "red", "brown"};
 	std::set<std::string> valid_colors;
-	valid_colors.insert(arr_valid_colors, arr_valid_colors + 8);
+	valid_colors.insert(arr_valid_colors, arr_valid_colors + 9);
 
 	for (auto color_name : valid_colors)
 	{

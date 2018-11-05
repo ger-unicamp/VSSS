@@ -4,7 +4,7 @@ GameViewer::GameViewer()
 {
 }
 
-GameViewer::GameViewer(VSSSBuffer<Mat> &view_buffer, int *waitkey_buf)
+GameViewer::GameViewer(VSSSBuffer<vector<Mat>> &view_buffer, int *waitkey_buf)
 {
 	this->start(view_buffer, waitkey_buf);
 }
@@ -17,21 +17,22 @@ GameViewer::~GameViewer()
 	}
 }
 
-void GameViewer::start(VSSSBuffer<Mat> &view_buffer, int *waitkey_buf)
+void GameViewer::start(VSSSBuffer<vector<Mat>> &view_buffer, int *waitkey_buf)
 {
 	this->frame_show_th = std::thread(frame_show, &view_buffer, waitkey_buf);
 }
 
-void frame_show(VSSSBuffer<Mat> *view_buffer, int *waitkey_buf)
+void frame_show(VSSSBuffer<vector<Mat>> *view_buffer, int *waitkey_buf)
 {
 
-	while (*waitkey_buf != 27 /* ESC */)
+	while (*waitkey_buf != ESC_CHAR)
 	{
-		Mat local_frame;
+		vector<Mat> local_frames;
 
-		view_buffer->get(local_frame);
+		view_buffer->get(local_frames);
 
-		imshow("Game View", local_frame);
+		for (uint i = 0; i < local_frames.size(); i++)
+			imshow(std::string("Game View") + to_string(i), local_frames[i]);
 
 		*waitkey_buf = waitKey(1);
 	}

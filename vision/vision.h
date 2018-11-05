@@ -12,6 +12,7 @@
 #include <chrono>
 #include <condition_variable>
 #include "../strategy/game_state.hpp"
+#include "../manager/constants.h"
 
 using namespace cv;
 using namespace std;
@@ -52,9 +53,9 @@ class GameViewer
 
   public:
 	GameViewer();
-	GameViewer(VSSSBuffer<Mat> &view_buffer, int *waitkey_buf);
+	GameViewer(VSSSBuffer<vector<Mat>> &view_buffer, int *waitkey_buf);
 	~GameViewer();
-	void start(VSSSBuffer<Mat> &view_buffer, int *waitkey_buf);
+	void start(VSSSBuffer<vector<Mat>> &view_buffer, int *waitkey_buf);
 };
 
 class Color
@@ -89,6 +90,6 @@ class Color
 
 //Function declarations----------------------------------------------------------------
 void frame_capture(VideoCapture *capture, VSSSBuffer<Mat> *processing_buffer, int *waitkey_buf);
-void frame_show(VSSSBuffer<Mat> *view_buffer, int *waitkey_buf);
+void frame_show(VSSSBuffer<vector<Mat>> *view_buffer, int *waitkey_buf);
 
 #endif

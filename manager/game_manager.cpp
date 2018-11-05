@@ -1,10 +1,12 @@
 #include "../vision/vision.h"
 #include "../vision/ImageProcessor.hpp"
+#include "../strategy/strategy.hpp"
 #include "program_settings.hpp"
+#include "constants.h"
 
 //Global variables---------------------------------------------------------------------
 VideoCapture capture;
-VSSSBuffer<Mat> view_fb;
+VSSSBuffer<vector<Mat>> view_fb;
 VSSSBuffer<Mat> proc_fb;
 VSSSBuffer<GameState> game_buffer;
 
@@ -49,11 +51,13 @@ int main(int argc, char *argv[])
 	ImageProcessor ip(settings.flip, settings.team_color, settings);
 	ip.start(view_fb, proc_fb, game_buffer, &key);
 
+	Strategy(game_buffer, &key, "/dev/ttyACM0", 57600);
+
 	while (13)
 	{
 		std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
-		if (key == 27 /*ESC*/)
+		if (key == ESC_CHAR)
 			break;
 	}
 

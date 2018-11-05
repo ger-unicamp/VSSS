@@ -1,84 +1,92 @@
 {
     "colors": {
         "green": {
-            "B_max": 140,
-            "B_min": 68,
-            "G_max": 128,
-            "G_min": 85,
-            "R_max": 53,
-            "R_min": 6
+            "B_max": 139,
+            "B_min": 81,
+            "G_max": 133,
+            "G_min": 90,
+            "R_max": 188,
+            "R_min": 122
         },
         "pink": {
-            "B_max": 181,
-            "B_min": 78,
-            "G_max": 108,
-            "G_min": 7,
-            "R_max": 217,
-            "R_min": 116
+            "B_max": 126,
+            "B_min": 70,
+            "G_max": 207,
+            "G_min": 164,
+            "R_max": 130,
+            "R_min": 82
         },
         "brown": {
-            "B_max": 109,
-            "B_min": 2,
-            "G_max": 123,
-            "G_min": 12,
-            "R_max": 170,
-            "R_min": 64
+            "B_max": 0,
+            "B_min": 0,
+            "G_max": 0,
+            "G_min": 0,
+            "R_max": 0,
+            "R_min": 0
         },
         "orange": {
-            "B_max": 67,
-            "B_min": 0,
-            "G_max": 58,
-            "G_min": 0,
-            "R_max": 252,
-            "R_min": 160
+            "B_max": 140,
+            "B_min": 77,
+            "G_max": 208,
+            "G_min": 158,
+            "R_max": 196,
+            "R_min": 150
         },
         "red": {
-            "B_max": 8,
-            "B_min": 0,
-            "G_max": 20,
-            "G_min": 0,
-            "R_max": 246,
-            "R_min": 166
+            "B_max": 137,
+            "B_min": 65,
+            "G_max": 198,
+            "G_min": 134,
+            "R_max": 186,
+            "R_min": 130
         },
         "blue": {
-            "B_max": 201,
-            "B_min": 142,
-            "G_max": 123,
-            "G_min": 79,
-            "R_max": 68,
-            "R_min": 2
+            "B_max": 128,
+            "B_min": 60,
+            "G_max": 162,
+            "G_min": 118,
+            "R_max": 100,
+            "R_min": 65
         },
         "yellow": {
-            "B_max": 53,
-            "B_min": 0,
-            "G_max": 206,
-            "G_min": 159,
-            "R_max": 235,
-            "R_min": 190
+            "B_max": 199,
+            "B_min": 135,
+            "G_max": 145,
+            "G_min": 111,
+            "R_max": 211,
+            "R_min": 167
+        },
+        "salmon": {
+            "B_max": 208,
+            "B_min": 148,
+            "G_max": 158,
+            "G_min": 133,
+            "R_max": 170,
+            "R_min": 115
         }
     },
     "points": [
         {
-            "x": 367,
-            "y": 50
+            "x": 363,
+            "y": 41
         },
         {
-            "x": 1015,
-            "y": 100
+            "x": 1030,
+            "y": 79
         },
         {
-            "x": 976,
-            "y": 664
+            "x": 1006,
+            "y": 641
         },
         {
-            "x": 321,
-            "y": 620
+            "x": 339,
+            "y": 613
         }
     ],
-    "K": 16,
+    "K": 13,
     "secondary_colors": [
-        "brown",
         "pink",
+        "salmon",
         "green"
     ],
     "camera_parameters": "v4l2-ctl -d /dev/video1 -c saturation=255 -c gain=255 -c exposure_auto=1 -c exposure_absolute=40 -c focus_auto=0"
