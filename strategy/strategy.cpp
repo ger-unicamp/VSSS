@@ -28,28 +28,11 @@ void Strategy::robot_control(VSSSBuffer<GameState> *game_buffer, int *waitkey_bu
 {
 	vector<arma::vec2> robot_speed(3);
 
-	arma::vec2 prev_p[3] = {{0, 0}, {0, 0}, {0, 0}};
-
-	arma::vec2 v[3] = {{0, 0}, {0, 0}, {0, 0}};
-	arma::vec2 prev_v[3] = {{0, 0}, {0, 0}, {0, 0}};
-
-	arma::vec2 a[3] = {{0, 0}, {0, 0}, {0, 0}};
-
 	while (*waitkey_buf != ESC_CHAR)
 	{
 		game_buffer->get(this->state);
 
-		for (int i = 0; i < 3; i++)
-		{
-			v[i] = this->state.robots[i].pos - prev_p[i];
-			v[i] = this->state.robots[i].dir * arma::dot(v[i], this->state.robots[i].dir);
-
-			a[i] = v[i] - prev_v[i];
-		}
-
 		cout << this->state.robots[0].pos << endl;
-		cout << v[0] << endl;
-		cout << a[0] << endl;
 
 		arma::vec2 target = state.ball.pos;
 
@@ -66,32 +49,6 @@ void Strategy::robot_control(VSSSBuffer<GameState> *game_buffer, int *waitkey_bu
 		robot_speed[0] = {fwd - c_prod_sign * diff, fwd + c_prod_sign * diff};
 
 		/*
-		arma::vec2 target = {75, 65};
-		arma::vec2 a_prime = 100 * arma::normalise(target - this->state.robots[0].pos) / arma::norm(target - this->state.robots[0].pos, 2);
-
-		arma::vec2 next_a = a[0] + a_prime;
-
-		arma::vec2 tangencial_a = this->state.robots[0].dir * arma::dot(next_a, this->state.robots[0].dir);
-
-		arma::vec2 centripetal_a = next_a - tangencial_a;
-		cout << "ac\n"
-			 << centripetal_a << endl;
-
-		arma::vec2 next_v = v[0] + tangencial_a;
-		cout << "vm\n"
-			 << next_v << endl;
-
-		arma::vec3 c_prod = arma::cross(arma::vec3({next_v[0], next_v[1], 0.0}), arma::vec3({centripetal_a[0], centripetal_a[1], 0.0}));
-
-		robot_speed[0] = {sqrt(arma::norm(next_v, 2)) + 0.5 * sqrt(arma::norm(centripetal_a, 2)) / (2 * sqrt(arma::norm(next_v, 2))),
-						  sqrt(arma::norm(next_v, 2)) - 0.5 * sqrt(arma::norm(centripetal_a, 2)) / (2 * sqrt(arma::norm(next_v, 2)))};
-
-		robot_speed[0] = 60 * normalise(robot_speed[0]);
-
-		cout << robot_speed[0] << endl;
-*/
-
-		/*
 		if (this->state.robots[0].pos[0] < FIELD_WIDTH / 2.0)
 		{
 			robot_speed[0] = {50, 50};
@@ -102,12 +59,6 @@ void Strategy::robot_control(VSSSBuffer<GameState> *game_buffer, int *waitkey_bu
 		}
 */
 		robot_speed[1] = robot_speed[2] = {0, 0};
-
-		for (int i = 0; i < 3; i++)
-		{
-			prev_p[i] = this->state.robots[i].pos;
-			prev_v[i] = v[i];
-		}
 
 		for (int i = 0; i < 3; i++)
 			if (this->state.robots[i].missing || this->state.ball.missing)
