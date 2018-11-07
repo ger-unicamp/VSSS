@@ -66,19 +66,39 @@ void Strategy::robot_control(VSSSBuffer<GameState> *game_buffer, int *waitkey_bu
 		midfield_target[0] = max(5.0, min(145.0, midfield_target[0]));
 		midfield_target[1] = min(125.0, max(5.0, midfield_target[1]));
 
+		// Stay outside goal area.
 		if (midfield_target[0] < 20 && 25 < midfield_target[1] && midfield_target[1] < 105)
 		{
 			midfield_target[0] = 30;
 			if (this->state.ball.pos[1] < 65)
-				midfield_target[1] = this->state.ball.pos[1] + 40;
+				midfield_target[1] = 15;
 			else
-				midfield_target[1] = this->state.ball.pos[1] - 40;
+				midfield_target[1] = 115;
 		}
 
 		robot_speed[0] = to_target(this->state.robots[0], midfield_target);
 
-		// Finisher
-		robot_speed[1] = {0, 0};
+		// Defender
+		arma::vec2 defender_target;
+		defender_target[0] = 30;
+		if (this->state.robots[2].pos[1] < 65)
+			defender_target[1] = 80;
+		else
+			defender_target[1] = 50;
+
+		robot_speed[1] = to_target(this->state.robots[1], defender_target, 2.0);
+
+		double defender_distance_to_ball = sqrt(arma::norm(this->state.ball.pos - this->state.robots[1].pos, 2));
+		if (defender_distance_to_ball < 6)
+		{
+			arma::vec2 goal_to_robot = this->state.robots[1].pos - friendly_goal_center_pos;
+			arma::vec2 goal_to_ball = this->state.ball.pos - friendly_goal_center_pos;
+
+			arma::vec3 c_prod = arma::cross(arma::vec3({goal_to_robot[0], goal_to_robot[1], 0.0}), arma::vec3({goal_to_ball[0], goal_to_ball[1], 0.0}));
+			double c_prod_sign = c_prod[2] == 0 ? 1 : (c_prod[2] / abs(c_prod[2]));
+
+			robot_speed[1] = {c_prod_sign * 250, c_prod_sign * -250};
+		}
 
 		// Goalkeeper
 		arma::vec2 goalkeeper_target = {8, max(42.0, min(88.0, future_ball_pos(2)[1]))};
@@ -93,7 +113,7 @@ void Strategy::robot_control(VSSSBuffer<GameState> *game_buffer, int *waitkey_bu
 			arma::vec3 c_prod = arma::cross(arma::vec3({goal_to_robot[0], goal_to_robot[1], 0.0}), arma::vec3({goal_to_ball[0], goal_to_ball[1], 0.0}));
 			double c_prod_sign = c_prod[2] == 0 ? 1 : (c_prod[2] / abs(c_prod[2]));
 
-			robot_speed[2] = {c_prod_sign * 100, c_prod_sign * -100};
+			robot_speed[2] = {c_prod_sign * 120, c_prod_sign * -120};
 		}
 
 		// Missing conditions
