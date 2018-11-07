@@ -52,6 +52,14 @@ void ImageProcessor::processor(VSSSBuffer<vector<Mat>> *view_buffer, VSSSBuffer<
 
 		cvtColor(transformed_frame, transformed_frame, COLOR_BGR2Lab);
 
+		// Flip
+		if (this->settings.flip)
+		{
+			Mat tmp;
+			cv::flip(transformed_frame, tmp, -1);
+			transformed_frame = tmp;
+		}
+
 		//Find objects on field
 		std::vector<Circle> primary_circles, opponent_circles, secondary_circles[3], ball_circles;
 
@@ -129,41 +137,42 @@ void ImageProcessor::processor(VSSSBuffer<vector<Mat>> *view_buffer, VSSSBuffer<
 
 		game_buffer->update(this->game);
 
-		// TODO Flip
-
 		vector<Mat> frames_vec;
 		frames_vec.push_back(transformed_frame.clone());
 
 		transformed_frame = processed_frame;
 
 		Color clr;
-		if (*waitkey_buf > 0 && *waitkey_buf < 255)
-			sw_key = *waitkey_buf;
+		int temp_key = *waitkey_buf;
+		if (isdigit(temp_key))
+			sw_key = temp_key;
 
 		switch (sw_key)
 		{
-		case 'r':
-			clr = settings.colors["red"];
-			break;
-		case 'g':
-			clr = settings.colors["green"];
-			break;
-		case 'b':
-			clr = settings.colors["blue"];
-			break;
-		case 'o':
+		case '0':
 			clr = settings.colors["orange"];
 			break;
-		case 'p':
-			clr = settings.colors["pink"];
+		case '1':
+			clr = settings.colors["blue"];
 			break;
-		case 'y':
+		case '2':
 			clr = settings.colors["yellow"];
 			break;
-		case 'w':
+		case '3':
+			clr = settings.colors["pink"];
+			break;
+		case '4':
+			clr = settings.colors["salmon"];
+			break;
+		case '5':
+			clr = settings.colors["green"];
+			break;
+		case '6':
+			clr = settings.colors["red"];
+			break;
+		case '7':
 			clr = settings.colors["brown"];
 			break;
-		case 'd':
 		default:
 			clr = Color(0, 255, 0, 255, 0, 255);
 			break;

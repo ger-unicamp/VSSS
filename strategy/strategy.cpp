@@ -35,9 +35,12 @@ void Strategy::robot_control(VSSSBuffer<GameState> *game_buffer, int *waitkey_bu
 	vector<arma::vec2> robot_speed(3);
 	const arma::vec2 friendly_goal_center_pos = {0, 65};
 	const arma::vec2 enemy_goal_center_pos = {150, 65};
-
+	bool game_running = false;
 	while (*waitkey_buf != ESC_CHAR)
 	{
+		game_running = (*waitkey_buf) == 's' ? true : game_running;
+		game_running = (*waitkey_buf) == 'p' ? false : game_running;
+
 		game_buffer->get(this->state);
 
 		// Ball prediction
@@ -83,7 +86,7 @@ void Strategy::robot_control(VSSSBuffer<GameState> *game_buffer, int *waitkey_bu
 
 		// Missing conditions
 		for (int i = 0; i < 3; i++)
-			if (this->state.robots[i].missing || this->state.ball.missing)
+			if (this->state.robots[i].missing || this->state.ball.missing || !game_running)
 				robot_speed[i] = {0, 0};
 
 		if (this->serial)
