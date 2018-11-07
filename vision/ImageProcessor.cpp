@@ -218,8 +218,10 @@ void transform(const Mat &input, Mat &output)
 
 void find_color(const Mat &input, Mat &binary_image, Color color)
 {
+	double b_avg = (color.bmin + color.bmax) / 2;
+	double b_diff = (color.bmax - color.bmin) / 2;
 
-	inRange(input, Scalar(color.bmin, color.gmin, color.rmin), Scalar(color.bmax, color.gmax, color.rmax), binary_image);
+	inRange(input, Scalar(int(b_avg - 1.5 * b_diff), color.gmin, color.rmin), Scalar(int(b_avg + 1.5 * b_diff), color.gmax, color.rmax), binary_image);
 
 	// Apply the erosion operation and then dilation. In theory, it removes small interferences from the image.
 	// Increase erosion size to remove bigger "spots"

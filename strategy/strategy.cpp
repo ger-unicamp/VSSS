@@ -52,8 +52,8 @@ void Strategy::robot_control(VSSSBuffer<GameState> *game_buffer, int *waitkey_bu
 
 		// Mid-field
 		// TODO future number of frames reduced when close.
-		arma::vec2 enemy_goal_to_ball = (future_ball_pos(5) - enemy_goal_center_pos);
-		double scaling_factor = (sqrt(arma::norm(enemy_goal_to_ball, 2)) + 5.0) / sqrt(arma::norm(enemy_goal_to_ball, 2));
+		arma::vec2 enemy_goal_to_ball = (future_ball_pos(0) - enemy_goal_center_pos);
+		double scaling_factor = (sqrt(arma::norm(enemy_goal_to_ball, 2)) + 1.5) / sqrt(arma::norm(enemy_goal_to_ball, 2));
 
 		arma::vec2 midfield_target = scaling_factor * enemy_goal_to_ball + enemy_goal_center_pos;
 		// TODO verify out of bounds conditions or goalkeeper interference
@@ -63,17 +63,29 @@ void Strategy::robot_control(VSSSBuffer<GameState> *game_buffer, int *waitkey_bu
 			midfield_target = this->state.ball.pos;
 		}
 
+		midfield_target[0] = max(5.0, min(145.0, midfield_target[0]));
+		midfield_target[1] = min(125.0, max(5.0, midfield_target[1]));
+
+		if (midfield_target[0] < 20 && 25 < midfield_target[1] && midfield_target[1] < 105)
+		{
+			midfield_target[0] = 30;
+			if (this->state.ball.pos[1] < 65)
+				midfield_target[1] = this->state.ball.pos[1] + 40;
+			else
+				midfield_target[1] = this->state.ball.pos[1] - 40;
+		}
+
 		robot_speed[0] = to_target(this->state.robots[0], midfield_target);
 
 		// Finisher
 		robot_speed[1] = {0, 0};
 
 		// Goalkeeper
-		arma::vec2 goalkeeper_target = {17, max(47.0, min(83.0, this->state.ball.pos[1]))};
-		robot_speed[2] = to_target(this->state.robots[2], goalkeeper_target, 3.0);
+		arma::vec2 goalkeeper_target = {8, max(42.0, min(88.0, future_ball_pos(2)[1]))};
+		robot_speed[2] = to_target(this->state.robots[2], goalkeeper_target, 2.0);
 
 		double goalkeeper_distance_to_ball = sqrt(arma::norm(this->state.ball.pos - this->state.robots[2].pos, 2));
-		if (goalkeeper_distance_to_ball < 5.0)
+		if (goalkeeper_distance_to_ball < 4)
 		{
 			arma::vec2 goal_to_robot = this->state.robots[2].pos - friendly_goal_center_pos;
 			arma::vec2 goal_to_ball = this->state.ball.pos - friendly_goal_center_pos;
@@ -81,7 +93,7 @@ void Strategy::robot_control(VSSSBuffer<GameState> *game_buffer, int *waitkey_bu
 			arma::vec3 c_prod = arma::cross(arma::vec3({goal_to_robot[0], goal_to_robot[1], 0.0}), arma::vec3({goal_to_ball[0], goal_to_ball[1], 0.0}));
 			double c_prod_sign = c_prod[2] == 0 ? 1 : (c_prod[2] / abs(c_prod[2]));
 
-			robot_speed[2] = {c_prod_sign * 200, c_prod_sign * -200};
+			robot_speed[2] = {c_prod_sign * 100, c_prod_sign * -100};
 		}
 
 		// Missing conditions
@@ -114,8 +126,8 @@ arma::vec2 to_target(Robot robot, arma::vec2 target, double distance_to_stop)
 
 	double distance_to_target = sqrt(arma::norm(target - robot.pos, 2));
 
-	double diff = max(40.0, theta * 10); // TODO find the best parameters for both these numbers
-	double fwd = max(100.0, min(40.0, distance_to_target));
+	double diff = min(60.0, theta * 30); // TODO find the best parameters for both these numbers
+	double fwd = min(150.0, max(50.0, 3 * distance_to_target));
 
 	arma::vec2 retv = {move_dir * (fwd - c_prod_sign * diff), move_dir * (fwd + c_prod_sign * diff)}; // TODO maybe use {fwd, fwd + diff}
 
