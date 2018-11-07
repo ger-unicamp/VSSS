@@ -71,10 +71,15 @@ arma::vec2 to_target(Robot robot, arma::vec2 target)
 	arma::vec3 c_prod = arma::cross(arma::vec3({robot.dir[0], robot.dir[1], 0.0}), arma::vec3({dir_target[0], dir_target[1], 0.0}));
 	double c_prod_sign = c_prod[2] == 0 ? 1 : (c_prod[2] / abs(c_prod[2]));
 
-	double theta = acos(arma::dot(dir_target, robot.dir));
+	double theta;
+	double move_dir;
+	if (arma::dot(dir_target, robot.dir) >= 0)
+		theta = acos(arma::dot(dir_target, robot.dir)), move_dir = 1.0;
+	else
+		theta = acos(-1 * arma::dot(dir_target, robot.dir)), move_dir = -1.0;
 
 	double diff = max(40.0, theta * 10); // TODO find the best parameters for both these numbers
 	double fwd = max(100.0, min(40.0, sqrt(arma::norm(target - robot.pos, 2))));
 
-	return arma::vec2({fwd - c_prod_sign * diff, fwd + c_prod_sign * diff}); // TODO maybe use {fwd, fwd + diff}
+	return arma::vec2({move_dir * (fwd - c_prod_sign * diff), move_dir * (fwd + c_prod_sign * diff)}); // TODO maybe use {fwd, fwd + diff}
 }
