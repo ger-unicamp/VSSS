@@ -1,93 +1,93 @@
 {
-    "colors": {
-        "green": {
-            "B_max": 139,
-            "B_min": 81,
-            "G_max": 133,
-            "G_min": 90,
-            "R_max": 188,
-            "R_min": 122
-        },
-        "pink": {
-            "B_max": 126,
-            "B_min": 70,
-            "G_max": 207,
-            "G_min": 164,
-            "R_max": 130,
-            "R_min": 82
-        },
-        "brown": {
-            "B_max": 0,
-            "B_min": 0,
-            "G_max": 0,
-            "G_min": 0,
-            "R_max": 0,
-            "R_min": 0
-        },
-        "orange": {
-            "B_max": 140,
-            "B_min": 77,
-            "G_max": 208,
-            "G_min": 158,
-            "R_max": 196,
-            "R_min": 150
-        },
-        "red": {
-            "B_max": 137,
-            "B_min": 65,
-            "G_max": 198,
-            "G_min": 134,
-            "R_max": 186,
-            "R_min": 130
-        },
-        "blue": {
-            "B_max": 128,
-            "B_min": 60,
-            "G_max": 162,
-            "G_min": 118,
-            "R_max": 100,
-            "R_min": 65
-        },
-        "yellow": {
-            "B_max": 199,
-            "B_min": 135,
-            "G_max": 145,
-            "G_min": 111,
-            "R_max": 211,
-            "R_min": 167
-        },
-        "salmon": {
-            "B_max": 208,
-            "B_min": 148,
-            "G_max": 158,
-            "G_min": 133,
-            "R_max": 170,
-            "R_min": 115
-        }
-    },
-    "points": [
-        {
-            "x": 363,
-            "y": 41
-        },
-        {
-            "x": 1030,
-            "y": 79
-        },
-        {
-            "x": 1006,
-            "y": 641
-        },
-        {
-            "x": 339,
-            "y": 613
-        }
-    ],
-    "K": 13,
-    "secondary_colors": [
-        "pink",
-        "salmon",
-        "green"
-    ],
-    "camera_parameters": "v4l2-ctl -d /dev/video1 -c saturation=255 -c gain=255 -c exposure_auto=1 -c exposure_absolute=40 -c focus_auto=0"
+ "colors": {
+  "green": {
+   "B_max": 114,
+   "B_min": 62,
+   "G_max": 129,
+   "G_min": 89,
+   "R_max": 173,
+   "R_min": 136
+  },
+  "pink": {
+   "B_max": 114,
+   "B_min": 88,
+   "G_max": 200,
+   "G_min": 175,
+   "R_max": 140,
+   "R_min": 93
+  },
+  "brown": {
+   "B_max": 0,
+   "B_min": 0,
+   "G_max": 0,
+   "G_min": 0,
+   "R_max": 0,
+   "R_min": 0
+  },
+  "orange": {
+   "B_max": 126,
+   "B_min": 90,
+   "G_max": 204,
+   "G_min": 160,
+   "R_max": 193,
+   "R_min": 158
+  },
+  "red": {
+   "B_max": 137,
+   "B_min": 65,
+   "G_max": 198,
+   "G_min": 134,
+   "R_max": 186,
+   "R_min": 130
+  },
+  "blue": {
+   "B_max": 101,
+   "B_min": 62,
+   "G_max": 158,
+   "G_min": 135,
+   "R_max": 92,
+   "R_min": 62
+  },
+  "yellow": {
+   "B_max": 189,
+   "B_min": 143,
+   "G_max": 146,
+   "G_min": 110,
+   "R_max": 205,
+   "R_min": 170
+  },
+  "salmon": {
+   "B_max": 187,
+   "B_min": 131,
+   "G_max": 166,
+   "G_min": 137,
+   "R_max": 173,
+   "R_min": 129
+  }
+ },
+ "points": [
+  {
+   "x": 220,
+   "y": 9
+  },
+  {
+   "x": 964,
+   "y": 22
+  },
+  {
+   "x": 953,
+   "y": 679
+  },
+  {
+   "x": 191,
+   "y": 657
+  }
+ ],
+ "K": 20,
+ "secondary_colors": [
+  "pink",
+  "salmon",
+  "green"
+ ],
+ "camera_parameters": "v4l2-ctl -d /dev/video1 -c saturation=255 -c gain=255 -c exposure_auto=1 -c exposure_absolute=30 -c focus_auto=0"
 }

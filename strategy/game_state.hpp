@@ -22,7 +22,7 @@ struct Robot
 	Robot()
 	{
 		pos = {0.0, 0.0};
-		dir = {0.0, 0.0};
+		dir = {1.0, 0.0};
 		missing = true;
 	}
 };

@@ -33,7 +33,8 @@ void frame_show(VSSSBuffer<vector<Mat>> *view_buffer, int *waitkey_buf)
 
 		for (uint i = 0; i < local_frames.size(); i++)
 			imshow(std::string("Game View") + to_string(i), local_frames[i]);
-
-		*waitkey_buf = waitKey(1);
+		int buf = waitKey(1);
+		if (buf > 0 && buf < 255)
+			*waitkey_buf = buf;
 	}
 }
