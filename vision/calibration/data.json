@@ -1,20 +1,20 @@
 {
  "colors": {
   "green": {
-   "B_max": 152,
-   "B_min": 107,
-   "G_max": 102,
-   "G_min": 81,
-   "R_max": 164,
-   "R_min": 124
+   "B_max": 114,
+   "B_min": 62,
+   "G_max": 129,
+   "G_min": 89,
+   "R_max": 173,
+   "R_min": 136
   },
   "pink": {
-   "B_max": 171,
-   "B_min": 107,
-   "G_max": 218,
-   "G_min": 186,
-   "R_max": 143,
-   "R_min": 87
+   "B_max": 114,
+   "B_min": 88,
+   "G_max": 200,
+   "G_min": 175,
+   "R_max": 140,
+   "R_min": 93
   },
   "brown": {
    "B_max": 0,
@@ -25,12 +25,12 @@
    "R_min": 0
   },
   "orange": {
-   "B_max": 138,
-   "B_min": 106,
-   "G_max": 212,
-   "G_min": 191,
-   "R_max": 196,
-   "R_min": 145
+   "B_max": 126,
+   "B_min": 90,
+   "G_max": 204,
+   "G_min": 160,
+   "R_max": 193,
+   "R_min": 158
   },
   "red": {
    "B_max": 137,
@@ -41,45 +41,45 @@
    "R_min": 130
   },
   "blue": {
-   "B_max": 131,
-   "B_min": 71,
-   "G_max": 180,
-   "G_min": 122,
-   "R_max": 88,
-   "R_min": 58
+   "B_max": 101,
+   "B_min": 62,
+   "G_max": 158,
+   "G_min": 135,
+   "R_max": 92,
+   "R_min": 62
   },
   "yellow": {
-   "B_max": 232,
-   "B_min": 189,
-   "G_max": 138,
-   "G_min": 111,
-   "R_max": 221,
-   "R_min": 188
+   "B_max": 189,
+   "B_min": 143,
+   "G_max": 146,
+   "G_min": 110,
+   "R_max": 205,
+   "R_min": 170
   },
   "salmon": {
-   "B_max": 216,
-   "B_min": 154,
-   "G_max": 169,
-   "G_min": 135,
-   "R_max": 179,
-   "R_min": 130
+   "B_max": 187,
+   "B_min": 131,
+   "G_max": 166,
+   "G_min": 137,
+   "R_max": 173,
+   "R_min": 129
   }
  },
  "points": [
   {
-   "x": 327,
-   "y": 16
+   "x": 220,
+   "y": 9
   },
   {
-   "x": 1054,
-   "y": 47
+   "x": 964,
+   "y": 22
   },
   {
-   "x": 1036,
-   "y": 695
+   "x": 953,
+   "y": 679
   },
   {
-   "x": 274,
+   "x": 191,
    "y": 657
   }
  ],
@@ -89,5 +89,5 @@
   "salmon",
   "green"
  ],
- "camera_parameters": "v4l2-ctl -d /dev/video1 -c saturation=255 -c gain=255 -c exposure_auto=1 -c exposure_absolute=25 -c focus_auto=0"
+ "camera_parameters": "v4l2-ctl -d /dev/video1 -c saturation=255 -c gain=255 -c exposure_auto=1 -c exposure_absolute=30 -c focus_auto=0"
 }
