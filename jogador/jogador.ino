@@ -1,7 +1,7 @@
 #include "jogador.h"
 
 #define DEBUG_MODE
-//#undef DEBUG_MODE
+#undef DEBUG_MODE
 #ifdef DEBUG_MODE
 #define debug_print(x) (Serial.println((x)))
 #else
