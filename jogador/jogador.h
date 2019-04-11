@@ -1,4 +1,4 @@
-#define PLAYER 0
+#define PLAYER 2
 
 #include <SPI.h>
 #include "nRF24L01.h"
