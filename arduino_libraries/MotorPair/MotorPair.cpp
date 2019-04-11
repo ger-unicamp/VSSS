@@ -1,20 +1,8 @@
-/*
- *	MotorPair.h - Control a robot's motors
- *
- *	From Unicamp's Grupo de Estudos em Robótica - GER
- *
- *	Rev 06/10/2018
- */
-
 /**
  * @file MotorPair.cpp
  * @author Grupo de Estudos em Robótica - GER
  * @brief The purpose of the code is to control a robot's motors.
- * @version 0.1
  * @date 2019-04-11
- * 
- * @copyright Copyright (c) 2019
- * 
  */
 
 #include <Arduino.h>
