@@ -34,7 +34,7 @@ no arquivo *data.json*.
 
 Tendo instalado todas as bibliotecas e assegurando o Arduino conectado à porta ttyACM0, o primeiro
 passo é a compilação definida no *Makefile* executando `make` no terminal.
-O executável gerado é *game.exe* (não confunda, este executável não roda em máquinas com Microsoft a 
+O executável gerado é *game.exe* (não confunda, este executável não roda em máquinas com Windows a 
 princípio). Para executar, o comando `./game.exe --team=yellow --cam=0 --flip=n`, ou com configurações
 de jogo análogas, roda o jogo. Caso haja dúvidas sobre as configurações possíveis, o comando `./game -h`
 dará mais detalhes.
@@ -74,7 +74,7 @@ implementada em *serial*.
 
 Contém o código *main* em *game_manager*, responsável por criar as *threads* que fazem captura, 
 processamento e exibição de imagem, e de estratégia de jogo. Também possui o código responsável por 
-processar o *data.json*, em *program_settings*, para fazer o *parsing* do aqruivo e inicializar as 
+processar o *data.json*, em *program_settings*, para fazer o *parsing* do arquivo e inicializar as 
 configurações do programa corretamente.
 
 ## Problemas
