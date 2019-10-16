@@ -1,93 +1,85 @@
 {
  "colors": {
-  "green": {
-   "B_max": 114,
-   "B_min": 62,
-   "G_max": 129,
-   "G_min": 89,
-   "R_max": 173,
-   "R_min": 136
+  "yellow": {
+   "B_max": 234,
+   "B_min": 181,
+   "G_max": 154,
+   "G_min": 106,
+   "R_max": 219,
+   "R_min": 179
   },
-  "pink": {
-   "B_max": 114,
-   "B_min": 88,
-   "G_max": 200,
-   "G_min": 175,
-   "R_max": 140,
-   "R_min": 93
-  },
-  "brown": {
-   "B_max": 0,
-   "B_min": 0,
-   "G_max": 0,
-   "G_min": 0,
-   "R_max": 0,
-   "R_min": 0
+  "salmon": {
+   "B_max": 236,
+   "B_min": 165,
+   "G_max": 172,
+   "G_min": 112,
+   "R_max": 156,
+   "R_min": 113
   },
   "orange": {
-   "B_max": 126,
+   "B_max": 150,
    "B_min": 90,
-   "G_max": 204,
-   "G_min": 160,
-   "R_max": 193,
-   "R_min": 158
+   "G_max": 208,
+   "G_min": 174,
+   "R_max": 196,
+   "R_min": 159
   },
-  "red": {
-   "B_max": 137,
-   "B_min": 65,
-   "G_max": 198,
-   "G_min": 134,
-   "R_max": 186,
+  "pink": {
+   "B_max": 171,
+   "B_min": 89,
+   "G_max": 208,
+   "G_min": 166,
+   "R_max": 161,
+   "R_min": 95
+  },
+  "green": {
+   "B_max": 193,
+   "B_min": 131,
+   "G_max": 125,
+   "G_min": 87,
+   "R_max": 180,
    "R_min": 130
   },
   "blue": {
-   "B_max": 101,
-   "B_min": 62,
-   "G_max": 158,
-   "G_min": 135,
-   "R_max": 92,
-   "R_min": 62
+   "B_max": 174,
+   "B_min": 121,
+   "G_max": 157,
+   "G_min": 107,
+   "R_max": 98,
+   "R_min": 75
   },
-  "yellow": {
-   "B_max": 189,
-   "B_min": 143,
-   "G_max": 146,
-   "G_min": 110,
-   "R_max": 205,
-   "R_min": 170
-  },
-  "salmon": {
-   "B_max": 187,
-   "B_min": 131,
-   "G_max": 166,
-   "G_min": 137,
-   "R_max": 173,
-   "R_min": 129
+  "red": {
+   "B_max": 111,
+   "B_min": 30,
+   "G_max": 191,
+   "G_min": 134,
+   "R_max": 181,
+   "R_min": 111
   }
  },
  "points": [
   {
-   "x": 220,
-   "y": 9
+   "x": 449,
+   "y": 87
   },
   {
-   "x": 964,
-   "y": 22
+   "x": 1095,
+   "y": 104
   },
   {
-   "x": 953,
+   "x": 1089,
    "y": 679
   },
   {
-   "x": 191,
-   "y": 657
+   "x": 423,
+   "y": 652
   }
  ],
- "K": 20,
+ "K": 16,
  "secondary_colors": [
   "pink",
-  "salmon",
+  "red",
   "green"
  ],
- "camera_parameters": "v4l2-ctl -d /dev/video1 -c saturation=255 -c gain=255 -c exposure_auto=1 -c exposure_absolute=30 -c focus_auto=0"
+ "camera_parameters": "v4l2-ctl -d /dev/video0 -c saturation=255 -c gain=255 -c exposure_auto=1 -c exposure_absolute=40 -c focus_auto=0"
 }

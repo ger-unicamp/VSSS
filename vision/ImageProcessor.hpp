@@ -6,6 +6,16 @@
 #include "../manager/program_settings.hpp"
 #include "../manager/constants.h"
 
+struct Shape
+{
+	Point2f center;
+	float area;
+
+	explicit Shape(Point2f center = Point2f(), float area = 0) : center(center), area(area) {}
+
+	bool operator<(Shape a) const { return area > a.area; }
+};
+
 struct Circle
 {
 	Point2f center;
@@ -48,5 +58,13 @@ void find_circles(const Mat &imagem, Color color_sought, vector<Circle> &res);
 void set_border_manually(const Mat &input, Point2f p0, Point2f p1, Point2f p2, Point2f p3);
 
 float point_distance(Point2f a, Point2f b);
+/**
+ * @brief 
+ * 
+ * @param imagem 
+ * @param color_sought 
+ * @param res 
+ */
+void find_shapes(const Mat &imagem, Color color_sought, vector<Shape> &res);
 
 #endif

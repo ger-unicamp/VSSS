@@ -61,14 +61,14 @@ void ImageProcessor::processor(VSSSBuffer<vector<Mat>> *view_buffer, VSSSBuffer<
 		}
 
 		//Find objects on field
-		std::vector<Circle> primary_circles, opponent_circles, secondary_circles[3], ball_circles;
+		std::vector<Shape> primary_shapes, opponent_shapes, secondary_shapes[3], ball_shapes;
 
-		find_circles(transformed_frame, settings.colors["orange"], ball_circles);
-		find_circles(transformed_frame, settings.team_color == "yellow" ? settings.colors["blue"] : settings.colors["yellow"], opponent_circles);
-		find_circles(transformed_frame, settings.colors[settings.team_color], primary_circles);
+		find_shapes(transformed_frame, settings.colors["orange"], ball_shapes);
+		find_shapes(transformed_frame, settings.team_color == "yellow" ? settings.colors["blue"] : settings.colors["yellow"], opponent_shapes);
+		find_shapes(transformed_frame, settings.colors[settings.team_color], primary_shapes);
 
 		for (int i = 0; i < 3; i++)
-			find_circles(transformed_frame, settings.colors[settings.secondary_colors[i]], secondary_circles[i]);
+			find_shapes(transformed_frame, settings.colors[settings.secondary_colors[i]], secondary_shapes[i]);
 
 		double dWidth = transformed_frame.size().width;
 		double dHeight = transformed_frame.size().height;
@@ -76,54 +76,54 @@ void ImageProcessor::processor(VSSSBuffer<vector<Mat>> *view_buffer, VSSSBuffer<
 		Mat processed_frame = transformed_frame.clone();
 		cvtColor(transformed_frame, transformed_frame, COLOR_Lab2BGR);
 
-		for (int i = 0; i < (int)primary_circles.size(); i++) // searches all primary_color circles
+		for (int i = 0; i < (int)primary_shapes.size(); i++) // searches all primary_color shapes
 		{
 
 			int index = 0, type = 0;
 			float min_dist = 1e8;
 			for (int j = 0; j < 3; j++) // finds closest secondary color
-				for (int k = 0; k < (int)secondary_circles[j].size(); k++)
-					if (point_distance(primary_circles[i].center, secondary_circles[j][k].center) < min_dist)
+				for (int k = 0; k < (int)secondary_shapes[j].size(); k++)
+					if (point_distance(primary_shapes[i].center, secondary_shapes[j][k].center) < min_dist)
 					{
-						min_dist = point_distance(primary_circles[i].center, secondary_circles[j][k].center);
+						min_dist = point_distance(primary_shapes[i].center, secondary_shapes[j][k].center);
 						index = k, type = j;
 					}
 
-			if (primary_circles[i].radius * FIELD_WIDTH / dWidth < 1.5 || min_dist * FIELD_WIDTH / dWidth > 5)
-				continue; // if the radius of the yellow circle is less than 8 or the secondary color is too far away (> 22), it is not a robot
+			if (primary_shapes[i].area * FIELD_WIDTH*FIELD_HEIGHT/(dWidth*dHeight) < 8 || min_dist * FIELD_WIDTH / dWidth > 5)
+				continue; // if the radius of the yellow shape is less than 8 or the secondary color is too far away (> 22), it is not a robot
 
 			// transforms the field positions to the range (10, 160) for x and (0, 130) for y
-			(this->game).robots[type].pos = {(FIELD_WIDTH * primary_circles[i].center.x / dWidth), (FIELD_HEIGHT * primary_circles[i].center.y / dHeight)};
+			(this->game).robots[type].pos = {(FIELD_WIDTH * primary_shapes[i].center.x / dWidth), (FIELD_HEIGHT * primary_shapes[i].center.y / dHeight)};
 			(this->game).robots[type].missing = false;
 			// calculates direction as an unitary vector
-			(this->game).robots[type].dir = {secondary_circles[type][index].center.x - primary_circles[i].center.x, secondary_circles[type][index].center.y - primary_circles[i].center.y};
+			(this->game).robots[type].dir = {secondary_shapes[type][index].center.x - primary_shapes[i].center.x, secondary_shapes[type][index].center.y - primary_shapes[i].center.y};
 			(this->game).robots[type].dir = normalise((this->game).robots[type].dir);
 
-			circle(transformed_frame, primary_circles[i].center, 4, Scalar(255, 255, 255), -1);
-			line(transformed_frame, primary_circles[i].center, primary_circles[i].center + 2 * (secondary_circles[type][index].center - primary_circles[i].center), Scalar(255, 255, 255), 2);
-			printf("\nx_robo%d=%.1f, y_robo%d=%.1f\n", type, primary_circles[i].center.x, type, primary_circles[i].center.y);
-			printf("robo%d_dir: %.1lf %.1lf\n", type, secondary_circles[type][index].center.x - primary_circles[i].center.x, secondary_circles[type][index].center.y - primary_circles[i].center.y);
-			printf("robo%d_dir: %.1lf\n", type, (M_PI + atan2(secondary_circles[type][index].center.y - primary_circles[i].center.y, secondary_circles[type][index].center.x - primary_circles[i].center.x)) * (180 / M_PI));
+			circle(transformed_frame, primary_shapes[i].center, 4, Scalar(255, 255, 255), -1);
+			line(transformed_frame, primary_shapes[i].center, primary_shapes[i].center + 2 * (secondary_shapes[type][index].center - primary_shapes[i].center), Scalar(255, 255, 255), 2);
+			printf("\nx_robo%d=%.1f, y_robo%d=%.1f\n", type, primary_shapes[i].center.x, type, primary_shapes[i].center.y);
+			printf("robo%d_dir: %.1lf %.1lf\n", type, secondary_shapes[type][index].center.x - primary_shapes[i].center.x, secondary_shapes[type][index].center.y - primary_shapes[i].center.y);
+			printf("robo%d_dir: %.1lf\n", type, (M_PI + atan2(secondary_shapes[type][index].center.y - primary_shapes[i].center.y, secondary_shapes[type][index].center.x - primary_shapes[i].center.x)) * (180 / M_PI));
 		}
 
-		sort(opponent_circles.begin(), opponent_circles.end());
-		for (int i = 0; i < 3 && i < (int)opponent_circles.size(); i++)
+		sort(opponent_shapes.begin(), opponent_shapes.end());
+		for (int i = 0; i < 3 && i < (int)opponent_shapes.size(); i++)
 		{
-			(this->game).enemies[i].pos = {(FIELD_WIDTH * opponent_circles[i].center.x / dWidth), (FIELD_HEIGHT * opponent_circles[i].center.y / dHeight)};
+			(this->game).enemies[i].pos = {(FIELD_WIDTH * opponent_shapes[i].center.x / dWidth), (FIELD_HEIGHT * opponent_shapes[i].center.y / dHeight)};
 			(this->game).enemies[i].dir = {0.0, 0.0};
 			(this->game).enemies[i].missing = false;
 
-			circle(transformed_frame, opponent_circles[i].center, 4, Scalar(255, 255, 255), -1);
-			printf("\nx_opponent%d=%.1f, y_opponent%d=%.1f\n", i, opponent_circles[i].center.x, i, opponent_circles[i].center.y);
+			circle(transformed_frame, opponent_shapes[i].center, 4, Scalar(255, 255, 255), -1);
+			printf("\nx_opponent%d=%.1f, y_opponent%d=%.1f\n", i, opponent_shapes[i].center.x, i, opponent_shapes[i].center.y);
 		}
 
-		sort(ball_circles.begin(), ball_circles.end());
-		if (ball_circles.size())
+		sort(ball_shapes.begin(), ball_shapes.end());
+		if (ball_shapes.size())
 		{
-			circle(transformed_frame, ball_circles[0].center, 4, Scalar(255, 255, 255), -1);
-			(this->game).ball.pos = {(FIELD_WIDTH * ball_circles[0].center.x / dWidth), (FIELD_HEIGHT * ball_circles[0].center.y / dHeight)};
+			circle(transformed_frame, ball_shapes[0].center, 4, Scalar(255, 255, 255), -1);
+			(this->game).ball.pos = {(FIELD_WIDTH * ball_shapes[0].center.x / dWidth), (FIELD_HEIGHT * ball_shapes[0].center.y / dHeight)};
 			(this->game).ball.missing = false;
-			printf("\nx_ball=%.1f, y_ball=%.1f\n", ball_circles[0].center.x, ball_circles[0].center.y);
+			printf("\nx_ball=%.1f, y_ball=%.1f\n", ball_shapes[0].center.x, ball_shapes[0].center.y);
 		}
 		else
 		{
@@ -221,7 +221,7 @@ void find_color(const Mat &input, Mat &binary_image, Color color)
 	double b_avg = (color.bmin + color.bmax) / 2;
 	double b_diff = (color.bmax - color.bmin) / 2;
 
-	inRange(input, Scalar(int(b_avg - 1.4 * b_diff), color.gmin, color.rmin), Scalar(int(b_avg + 1.4 * b_diff), color.gmax, color.rmax), binary_image);
+	inRange(input, Scalar(int(b_avg - 1.0 * b_diff), color.gmin, color.rmin), Scalar(int(b_avg + 1.0 * b_diff), color.gmax, color.rmax), binary_image);
 
 	// Apply the erosion operation and then dilation. In theory, it removes small interferences from the image.
 	// Increase erosion size to remove bigger "spots"
@@ -240,7 +240,7 @@ void find_circles(const Mat &image, Color color_sought, vector<Circle> &res)
 	vector<vector<Point>> contours;
 	vector<Vec4i> hierarchy;
 	// Finds countours and stores them in the "contours" vector
-	findContours(binary_image, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
+	findContours(binary_image, contours, hierarchy, RETR_TREE, CHAIN_APPROX_SIMPLE, Point(0, 0));
 
 	for (int i = 0; i < (int)contours.size(); i++)
 	{
@@ -257,4 +257,28 @@ void find_circles(const Mat &image, Color color_sought, vector<Circle> &res)
 float point_distance(Point2f a, Point2f b)
 {
 	return sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y));
+}
+
+void find_shapes(const Mat &image, Color color_sought, vector<Shape> &res)
+{
+	// Creates binary image white the selected color
+	Mat binary_image;
+	find_color(image, binary_image, color_sought);
+
+	vector<vector<Point>> contours;
+	vector<Vec4i> hierarchy;
+	// Finds countours and stores them in the "contours" vector
+	findContours(binary_image, contours, hierarchy, RETR_TREE, CHAIN_APPROX_SIMPLE, Point(0, 0));
+
+	for (int i = 0; i < (int)contours.size(); i++)
+	{
+		Point2f center(0, 0);
+		float area;
+		Moments M = moments(contours[i]);
+		center.x = M.m10/M.m00;
+		center.y = M.m01/M.m00;
+		area = contourArea(contours[i]);
+		// stores it in the output vector
+		res.push_back(Shape(center, area));
+	}
 }

@@ -14,6 +14,10 @@
 #include "../strategy/game_state.hpp"
 #include "../manager/constants.h"
 
+
+#include "opencv2/core/cvdef.h"
+#include "opencv2/videoio/videoio_c.h"
+
 using namespace cv;
 using namespace std;
 
