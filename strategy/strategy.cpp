@@ -64,7 +64,9 @@ void Strategy::robot_control(VSSSBuffer<GameState> *game_buffer, int *waitkey_bu
 		if (mid_history.size() > 30)
 			mid_history.pop_front();
 
-		cout << this->state.robots[0].pos << endl;
+		cout << this->state.robots[0].pos[0] << ' ' << this->state.robots[0].pos[1] << ' ';
+		cout << this->state.robots[0].dir[0] << ' ' << this->state.robots[0].dir[1] << endl;
+		cout << this->state.ball.pos[0] << ' ' << this->state.ball.pos[1] << endl;
 
 		// Mid-field
 		// TODO future number of frames reduced when close.
@@ -166,7 +168,7 @@ void Strategy::robot_control(VSSSBuffer<GameState> *game_buffer, int *waitkey_bu
 		}
 	}
 }
-
+/*
 arma::vec2 to_target(Robot robot, arma::vec2 target, double distance_to_stop)
 {
 	arma::vec2 dir_target = arma::normalise(target - robot.pos);
@@ -189,6 +191,23 @@ arma::vec2 to_target(Robot robot, arma::vec2 target, double distance_to_stop)
 	arma::vec2 retv = {move_dir * (fwd - c_prod_sign * diff), move_dir * (fwd + c_prod_sign * diff)}; // TODO maybe use {fwd, fwd + diff}
 
 	if (distance_to_target < distance_to_stop)
+		retv = {0.0, 0.0};
+
+	return retv;
+}
+*/
+arma::vec2 to_target(Robot robot, arma::vec2 target, double distance_to_stop)
+{
+	arma::vec2 robot_to_target = target - robot.pos;
+	arma::vec3 cross_pos = arma::cross(arma::vec3({robot.dir[0], robot.dir[1], 0.0}), arma::vec3({robot_to_target[0], robot_to_target[1], 0.0}));
+	double d_sin = cross_pos[2];
+	double cos_sig = arma::dot(robot.dir, robot_to_target);
+	cos_sig = cos_sig >= 0? 1: -1;
+	double k_dist = 1.2;
+	double k_angle = 0.5;
+	arma::vec2 retv = {(k_dist*arma::norm(robot_to_target) - k_angle*d_sin)*cos_sig, (k_dist*arma::norm(robot_to_target) + k_angle*d_sin)*cos_sig};
+
+	if (arma::norm(robot_to_target) < distance_to_stop)
 		retv = {0.0, 0.0};
 
 	return retv;

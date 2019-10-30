@@ -221,7 +221,7 @@ void find_color(const Mat &input, Mat &binary_image, Color color)
 	double b_avg = (color.bmin + color.bmax) / 2;
 	double b_diff = (color.bmax - color.bmin) / 2;
 
-	inRange(input, Scalar(int(b_avg - 1.4 * b_diff), color.gmin, color.rmin), Scalar(int(b_avg + 1.4 * b_diff), color.gmax, color.rmax), binary_image);
+	inRange(input, Scalar(int(b_avg - 1.0 * b_diff), color.gmin, color.rmin), Scalar(int(b_avg + 1.0 * b_diff), color.gmax, color.rmax), binary_image);
 
 	// Apply the erosion operation and then dilation. In theory, it removes small interferences from the image.
 	// Increase erosion size to remove bigger "spots"
@@ -240,7 +240,7 @@ void find_circles(const Mat &image, Color color_sought, vector<Circle> &res)
 	vector<vector<Point>> contours;
 	vector<Vec4i> hierarchy;
 	// Finds countours and stores them in the "contours" vector
-	findContours(binary_image, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
+	findContours(binary_image, contours, hierarchy, RETR_TREE, CHAIN_APPROX_SIMPLE, Point(0, 0));
 
 	for (int i = 0; i < (int)contours.size(); i++)
 	{
