@@ -34,7 +34,7 @@ class ImageProcessor
 	ProgramSettings settings;
 	std::thread processor_th;
 
-  public:
+public:
 	ImageProcessor(bool _flip, std::string _team_color, ProgramSettings &settings);
 	~ImageProcessor();
 
@@ -59,11 +59,11 @@ void set_border_manually(const Mat &input, Point2f p0, Point2f p1, Point2f p2, P
 
 float point_distance(Point2f a, Point2f b);
 /**
- * @brief 
+ * @brief Find shapes in a image matrix, restricted to a color RGB interval
  * 
  * @param imagem 
- * @param color_sought 
- * @param res 
+ * @param color_sought RGP color interval to find shape
+ * @param res Returned vector of shapes with the given color interval
  */
 void find_shapes(const Mat &imagem, Color color_sought, vector<Shape> &res);
 
