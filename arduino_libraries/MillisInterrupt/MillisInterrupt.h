@@ -1,12 +1,10 @@
-/*
- *	MillisInterrupt.h - Call a function in each 1ms
- *
- *	From Unicamp's Grupo de Estudos em Robótica - GER
- *
- *	Code based on Adafruit's code at
- *	https://learn.adafruit.com/pages/4570/elements/1081214/download
- *
- *	Rev 06/10/2018
+/**
+ * @file MillisInterrupt.h
+ * @author Grupo de Estudos em Robótica - GER
+ * @brief Header file. Call a function in each 1ms
+ * @date 2019-04-11
+ * @info Code based on Adafruit's code at
+ * https://learn.adafruit.com/pages/4570/elements/1081214/download
  */
 
 #ifndef MILLISINTERRUPT_H
