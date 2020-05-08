@@ -48,13 +48,6 @@ A relação de componentes e a interação entre eles pode ser vista no diagrama
 Os códigos de cada componente estão distribuidos em uma hierarquia de pastas que estão separadas por 
 funções de código.
 
-### Códigos de *Arduino*
-
-Separados em três pastas. A *arduino_libraries* contém código-fonte para as bibliotecas de *Arduino*
-desenvolvidas pelos integrantes do GER. A *emissor* possui o código-fonte principal do *Arduino* ligado
-ao computador. E por fim, a *jogador*, que possui o código-fonte principal do *Arduino* que controla cada
-robô.
-
 ### Vision
 
 Contém os códigos de captura (*FrameCapture*), processamento (*ImageProcessor*) e visualização 
