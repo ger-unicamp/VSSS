@@ -92,7 +92,7 @@ void Strategy::robot_control(VSSSBuffer<GameState> *game_buffer, int *waitkey_bu
 				midfield_target[1] = 115;
 		}
 
-		robot_speed[0] = 1.5 * to_target(this->state.robots[0], midfield_target);
+		robot_speed[0] = to_target(this->state.robots[0], midfield_target);
 
 		if (!mid_history.front().missing && !mid_history.back().missing && frame_number - last_paused > 60)
 		{
@@ -106,7 +106,7 @@ void Strategy::robot_control(VSSSBuffer<GameState> *game_buffer, int *waitkey_bu
 		if (!ball_history.front().missing && !ball_history.back().missing && frame_number - last_paused > 60)
 		{
 			if (sqrt(arma::norm(ball_history.front().pos - ball_history.back().pos, 2)) < 1)
-				if (sqrt(arma::norm(this->state.ball.pos - this->state.robots[0].pos, 2)) < 2.6)
+				if (sqrt(arma::norm(this->state.ball.pos - this->state.robots[0].pos, 2)) < 3)
 				{
 					if (this->state.robots[0].pos[1] > 65)
 						robot_speed[0] = {120, -120};
@@ -123,7 +123,7 @@ void Strategy::robot_control(VSSSBuffer<GameState> *game_buffer, int *waitkey_bu
 		else
 			defender_target[1] = 50;
 
-		robot_speed[1] = 2 * to_target(this->state.robots[1], defender_target, 2.0);
+		robot_speed[1] = to_target(this->state.robots[1], defender_target, 2.0);
 
 		double defender_distance_to_ball = sqrt(arma::norm(this->state.ball.pos - this->state.robots[1].pos, 2));
 		if (defender_distance_to_ball < 6)
@@ -139,7 +139,7 @@ void Strategy::robot_control(VSSSBuffer<GameState> *game_buffer, int *waitkey_bu
 
 		// Goalkeeper
 		arma::vec2 goalkeeper_target = {8, max(42.0, min(88.0, future_ball_pos(2)[1]))};
-		robot_speed[2] = 1.2 * to_target(this->state.robots[2], goalkeeper_target, 2.0);
+		robot_speed[2] = to_target(this->state.robots[2], goalkeeper_target, 2.0);
 
 		double goalkeeper_distance_to_ball = sqrt(arma::norm(this->state.ball.pos - this->state.robots[2].pos, 2));
 		if (goalkeeper_distance_to_ball < 4)

@@ -89,5 +89,5 @@
   "salmon",
   "green"
  ],
- "camera_parameters": "v4l2-ctl -d /dev/video1 -c saturation=200 -c gain=255 -c exposure_auto=1 -c exposure_absolute=30 -c focus_auto=0"
+ "camera_parameters": "v4l2-ctl -d /dev/video1 -c saturation=255 -c gain=255 -c exposure_auto=1 -c exposure_absolute=30 -c focus_auto=0"
 }
