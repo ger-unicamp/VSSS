@@ -1,3 +1,13 @@
+/**
+ * @file GameViewer.cpp
+ * @author GER
+ * @brief Gets processed frames from ImageProcessor and show on screen.
+ * @version 0.1
+ * @date 2020-05-10
+ * 
+ * @copyright Copyright (c) 2020
+ * 
+ */
 #include "vision.h"
 
 GameViewer::GameViewer()

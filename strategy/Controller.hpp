@@ -1,3 +1,13 @@
+/**
+ * @file Controller.hpp
+ * @author GER
+ * @brief File to implement new robot controller model. THIS IS NOT BEING USED IN ANY CODE.
+ * @version 0.1
+ * @date 2020-05-10
+ * 
+ * @copyright Copyright (c) 2020
+ * 
+ */
 #ifndef CONTROLLER_HPP
 #define CONTROLLER_HPP
 

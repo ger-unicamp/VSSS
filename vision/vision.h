@@ -1,3 +1,13 @@
+/**
+ * @file vision.h
+ * @author
+ * @brief Header file to FrameCapture and GameViewer
+ * @version 0.1
+ * @date 2020-05-10
+ * 
+ * @copyright Copyright (c) 2020
+ * 
+ */
 #ifndef vision_h
 #define vision_h
 

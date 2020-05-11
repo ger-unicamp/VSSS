@@ -1,7 +1,17 @@
+/**
+ * @file strategy.cpp
+ * @author GER
+ * @brief 	Implementation of game strategy. Here are calculated the robots speed based on game's
+ * 			robot and ball position.
+ * @version 0.1
+ * @date 2020-05-10
+ * 
+ * @copyright Copyright (c) 2020
+ * 
+ */
 #include "strategy.hpp"
 #include <armadillo>
 #include <list>
-#include "Controller.hpp"
 
 Strategy::Strategy(VSSSBuffer<GameState> &game_buffer, int *waitkey_buf, const char *serial_port, int baud)
 {
@@ -28,12 +38,18 @@ Strategy::~Strategy()
 }
 
 arma::vec2 to_target(Robot robot, arma::vec2 target, double distance_to_stop = -1.0);
-list<Ball> prev_ball_state;
 arma::vec2 future_ball_pos(int n_frames);
 
+list<Ball> prev_ball_state;
 list<Ball> ball_history;
 list<Robot> mid_history;
 
+/**
+ * @brief Calculate robots speed and send through serial.
+ * 
+ * @param game_buffer Game State (robots and ball position)
+ * @param waitkey_buf keyboard's pressed key to stop and run the game.
+ */
 void Strategy::robot_control(VSSSBuffer<GameState> *game_buffer, int *waitkey_buf)
 {
 	vector<arma::vec2> robot_speed(3);
@@ -42,8 +58,7 @@ void Strategy::robot_control(VSSSBuffer<GameState> *game_buffer, int *waitkey_bu
 	bool game_running = false;
 	int last_paused = 0;
 	int frame_number = 0;
-	Controller mid_controller(1.2, 0.0, 0.5, 0.0);
-
+	
 	while (*waitkey_buf != ESC_CHAR)
 	{
 		game_running = (*waitkey_buf) == 's' ? true : game_running;
@@ -97,7 +112,7 @@ void Strategy::robot_control(VSSSBuffer<GameState> *game_buffer, int *waitkey_bu
 				midfield_target[1] = 115;
 		}
 
-		robot_speed[0] = mid_controller.to_target(this->state.robots[0], midfield_target);
+		robot_speed[0] = to_target(this->state.robots[0], midfield_target);
 
 		if (!mid_history.front().missing && !mid_history.back().missing && frame_number - last_paused > 60)
 		{
@@ -172,23 +187,49 @@ void Strategy::robot_control(VSSSBuffer<GameState> *game_buffer, int *waitkey_bu
 	}
 }
 
+/**
+ * @brief Calculates robot speed based on it's position and target position.
+ * 
+ * @param robot Robot class that indicates its position and direction
+ * @param target Target (x,y) position
+ * @param distance_to_stop Distance from target that send {0,0} 
+ * @return arma::vec2 {left_speed, right_speed} -> Maybe it is inversed
+ */
 arma::vec2 to_target(Robot robot, arma::vec2 target, double distance_to_stop)
 {
-	arma::vec2 robot_to_target = target - robot.pos;
-	arma::vec3 cross_pos = arma::cross(arma::vec3({robot.dir[0], robot.dir[1], 0.0}), arma::vec3({robot_to_target[0], robot_to_target[1], 0.0}));
-	double d_sin = cross_pos[2];
-	double cos_sig = arma::dot(robot.dir, robot_to_target);
-	cos_sig = cos_sig >= 0? 1: -1;
-	double k_dist = 1.2;
-	double k_angle = 0.5;
-	arma::vec2 retv = {(k_dist*arma::norm(robot_to_target) - k_angle*d_sin)*cos_sig, (k_dist*arma::norm(robot_to_target) + k_angle*d_sin)*cos_sig};
+	arma::vec2 dir_target = arma::normalise(target - robot.pos);
 
-	if (arma::norm(robot_to_target) < distance_to_stop)
+	arma::vec3 c_prod = arma::cross(arma::vec3({robot.dir[0], robot.dir[1], 0.0}), arma::vec3({dir_target[0], dir_target[1], 0.0}));
+	double c_prod_sign = c_prod[2] == 0 ? 1 : (c_prod[2] / abs(c_prod[2]));
+
+	double theta;
+	double move_dir;
+	if (arma::dot(dir_target, robot.dir) >= 0)
+		theta = acos(arma::dot(dir_target, robot.dir)), move_dir = 1.0;
+	else
+		theta = acos(-1 * arma::dot(dir_target, robot.dir)), move_dir = -1.0;
+
+	double distance_to_target = sqrt(arma::norm(target - robot.pos, 2));
+
+	double diff = min(60.0, theta * 30); // TODO find the best parameters for both these numbers
+	double fwd = min(200.0, max(60.0, 40 + 6 * distance_to_target));
+
+	arma::vec2 retv = {move_dir * (fwd - c_prod_sign * diff), move_dir * (fwd + c_prod_sign * diff)}; // TODO maybe use {fwd, fwd + diff}
+
+	if (distance_to_target < distance_to_stop)
 		retv = {0.0, 0.0};
 
 	return retv;
 }
 
+/**
+ * @brief Predict the ball's position n frames ahead
+ * 
+ * @param n_frames 
+ * @param global::prev_ball_state
+ * @return arma::vec2 {x,y} ball position if ball is missing, its prediction if not
+ * 
+ */
 arma::vec2 future_ball_pos(int n_frames)
 {
 	if (prev_ball_state.size() > 1 && !prev_ball_state.front().missing && !prev_ball_state.back().missing)

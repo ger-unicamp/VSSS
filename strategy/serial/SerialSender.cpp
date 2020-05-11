@@ -1,4 +1,13 @@
-
+/**
+ * @file SerialSender.cpp
+ * @author GER
+ * @brief Code for write on Arduino Serial.
+ * @version 0.1
+ * @date 2020-05-10
+ * 
+ * @copyright Copyright (c) 2020
+ * 
+ */
 #include "SerialSender.hpp"
 
 SerialSender::SerialSender(const char *serialPath, unsigned int baud)

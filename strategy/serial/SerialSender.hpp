@@ -1,7 +1,7 @@
-/*
- *	Code for write on Arduino Serial
- *
- *	Based on http://www.cplusplus.com/forum/beginner/67479/
+/**
+ * @brief Code for write on Arduino Serial
+ *        Based on http://www.cplusplus.com/forum/beginner/67479/
+ * 
  */
 
 #ifndef _ARDUINO_SERIAL_H_

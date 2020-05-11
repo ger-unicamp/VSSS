@@ -1,3 +1,14 @@
+/**
+ * @file FrameCapture.cpp
+ * @author GER
+ * @brief	FrameCapture class that takes images from camera and send it
+ * 			to ImageProcessor
+ * @version 0.1
+ * @date 2020-05-10
+ * 
+ * @copyright Copyright (c) 2020
+ * 
+ */
 #include "vision.h"
 
 FrameCapture::FrameCapture()

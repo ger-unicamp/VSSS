@@ -1,4 +1,14 @@
-
+/**
+ * @file strategy.hpp
+ * @author GER
+ * @brief 	Definition of game strategy. Here are calculated the robots speed based on game's
+ * 			robot and ball position.
+ * @version 0.1
+ * @date 2020-05-10
+ * 
+ * @copyright Copyright (c) 2020
+ * 
+ */
 #ifndef STRATEGY_HPP
 #define STRATEGY_HPP
 

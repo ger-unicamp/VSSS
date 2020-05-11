@@ -10,7 +10,7 @@ da Unicamp (GER).
 Para executar o código deste repositório, é **necessário** ter instalado uma máquina Linux
 com as seguintes bibliotecas instaladas:
 
- - [OpenCV](https://opencv.org/) 3.x ou mais recente para computação visual
+ - [OpenCV](https://opencv.org/) 4.0 ou mais recente para computação visual
  - [Armadillo](http://arma.sourceforge.net/) para algebra linear em C++
  - [JSON for Modern C++](https://github.com/nlohmann/json) para *parsing* de JSON
    - Instalar como submodulo git: fazer `git clone --recursive ...` 
