@@ -11,21 +11,18 @@
 #ifndef vision_h
 #define vision_h
 
-#include <opencv2/core.hpp>
-#include <opencv2/videoio.hpp>
-#include <opencv2/highgui.hpp>
-#include <opencv2/imgproc.hpp> // cv::Canny()
+#include <opencv2/opencv.hpp>
+#include "opencv2/core/cvdef.h"
+#include "opencv2/videoio/videoio_c.h"
+
 #include <iostream>
-#include "opencv2/imgcodecs.hpp"
 #include <thread>
 #include <mutex>
 #include <chrono>
 #include <condition_variable>
+
 #include "../strategy/game_state.hpp"
 #include "../manager/constants.h"
-
-#include "opencv2/core/cvdef.h"
-#include "opencv2/videoio/videoio_c.h"
 
 using namespace cv;
 using namespace std;

@@ -12,7 +12,7 @@
 #ifndef STRATEGY_HPP
 #define STRATEGY_HPP
 
-#include "../vision/vision.h"
+#include "../vision/vision.hpp"
 #include "game_state.hpp"
 #include "serial/SerialSender.hpp"
 #include "../manager/constants.h"

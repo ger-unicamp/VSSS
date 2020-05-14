@@ -2,7 +2,7 @@
 #ifndef IMAGEPROCESSOR_H
 #define IMAGEPROCESSOR_H
 
-#include "vision.h"
+#include "vision.hpp"
 #include "../manager/program_settings.hpp"
 #include "../manager/constants.h"
 

@@ -9,7 +9,7 @@
  * @copyright Copyright (c) 2020
  * 
  */
-#include "vision.h"
+#include "vision.hpp"
 
 FrameCapture::FrameCapture()
 {

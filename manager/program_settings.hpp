@@ -4,7 +4,7 @@
 #include <opencv2/core.hpp>
 #include <opencv2/videoio.hpp>
 #include <map>
-#include "../vision/vision.h"
+#include "../vision/vision.hpp"
 
 using namespace cv;
 

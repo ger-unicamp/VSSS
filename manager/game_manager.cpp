@@ -1,4 +1,4 @@
-#include "../vision/vision.h"
+#include "../vision/vision.hpp"
 #include "../vision/ImageProcessor.hpp"
 #include "../strategy/strategy.hpp"
 #include "program_settings.hpp"
